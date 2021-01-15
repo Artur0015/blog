@@ -1,80 +1,56 @@
-import { addComment, changeArticle, getArticle, getArticleComments } from "../../redux/reducers/article-reducer"
-import React, { useEffect, useState } from 'react'
-import { RouteComponentProps, withRouter } from "react-router-dom"
+import {
+    actionsType,
+    addComment,
+    changeArticle,
+    getArticle,
+    getArticleComments
+} from "../../redux/reducers/article-reducer"
+import React, {useEffect, useState} from 'react'
+import {useParams} from "react-router-dom"
 import Article from "./article"
 import Comments from "./comments"
 import Preloader from "../preloader/preloader"
-import { mstpGetArticle, mstpGetComments } from "../../redux/selectors/article-selector"
-import CommentInput from "./comment-input"
-import { mstpGetUserUsername, mstpGetAuthenticationStatus } from "../../redux/selectors/auth-selector"
-import { articleType, commentType } from "../../redux/reducers/reducer-types"
-import { AppStateType } from "../../redux/redux-store"
-const { connect } = require("react-redux")
+import {mstpGetArticle, mstpGetComments} from "../../redux/selectors/article-selector"
+import {mstpGetUserUsername, mstpGetAuthenticationStatus} from "../../redux/selectors/auth-selector"
+import {dispatchType} from "../../redux/redux-store"
+import {useDispatch, useSelector} from "react-redux";
 
 
-type mapStateToPropsType = {
-    article: articleType
-    comments: Array<commentType>
-    username: string
-    isAuthenticated: boolean
-}
-
-type mapDispatchToPropsType = {
-    getArticleComments: (articleId: number) => Promise<void>
-    getArticle: (articleId: number) => Promise<void>
-    changeArticle: (changedArticle: articleType) => Promise<void>
-    addComment: (articleId: number, comment: commentType) => Promise<void>
-}
-
-type propsType = mapStateToPropsType & mapDispatchToPropsType & RouteComponentProps<{ articleId: string }>
-
-function ArticleAPI(props: propsType) {
-
+function ArticleContainer() {
     let [isLoadingArticle, setArticleLoading] = useState(false)
     let [areLoadingComments, setCommentsLoading] = useState(false)
-    const articleId = Number(props.match.params.articleId)
+
+    const dispatch: dispatchType<actionsType> = useDispatch()
+    const articleId = Number(useParams<{ articleId: string }>().articleId)
+    const article = useSelector(mstpGetArticle)
+    const comments = useSelector(mstpGetComments)
+    const username = useSelector(mstpGetUserUsername)
+    const isAuthenticated = useSelector(mstpGetAuthenticationStatus)
+
     useEffect(() => {
         setArticleLoading(true)
-        setCommentsLoading(true)
-        props.getArticle(articleId).then(() => {
+        setCommentsLoading(true);
+        dispatch(getArticle(articleId)).then(() => {
             setArticleLoading(false)
         })
-        props.getArticleComments(articleId).then(() => {
+        dispatch(getArticleComments(articleId)).then(() => {
             setCommentsLoading(false)
         })
     }, [])
 
+
     function handleCommentAddButtonClick(commentText: string) {
-        props.addComment(articleId, { text: commentText, author: props.username })
+        dispatch(addComment(articleId, {text: commentText, author: username}))
     }
 
     return <div>{isLoadingArticle
-        ? <Preloader />
-        : <Article article={props.article} changeArticle={props.changeArticle} />}
+        ? <Preloader/>
+        : <Article article={article} changeArticle={changeArticle}/>}
         {areLoadingComments
-            ? <Preloader />
-            : <><Comments comments={props.comments} />
-                {props.isAuthenticated
-                    ? <CommentInput handleClick={handleCommentAddButtonClick} />
-                    : null}
+            ? <Preloader/>
+            : <><Comments comments={comments} handleClick={handleCommentAddButtonClick} isAuthenticated={isAuthenticated}/>
             </>}
     </div>
 }
 
-const mapStateToProps = (state: AppStateType): mapStateToPropsType => ({
-    article: mstpGetArticle(state),
-    comments: mstpGetComments(state),
-    isAuthenticated: mstpGetAuthenticationStatus(state),
-    username: mstpGetUserUsername(state),
-
-})
-
-let ArticleWithUrlData = withRouter(ArticleAPI)
-export const ArticleContainer = connect(mapStateToProps, {
-    getArticleComments,
-    getArticle,
-    changeArticle,
-    addComment,
-
-
-})(ArticleWithUrlData)
+export default ArticleContainer

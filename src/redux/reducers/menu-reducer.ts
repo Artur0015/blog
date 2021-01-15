@@ -12,7 +12,7 @@ let initialState = {
 
 type initialStateType = typeof initialState
 
-type actionsType = inferActionsType<typeof actionCreators>
+export type actionsType = inferActionsType<typeof actions>
 
 export const menuReducer = (state = initialState, action: actionsType): initialStateType => {
     let stateCopy = { ...state }
@@ -32,12 +32,12 @@ export const menuReducer = (state = initialState, action: actionsType): initialS
 
 export type thunkType = baseThunkType<actionsType>
 
-const actionCreators = {
+const actions = {
     setPosts: (posts: Array<articleType>) => ({ type: 'setPosts', posts } as const),
     setPostsCount: (postsCount: number) => ({ type: 'setPostsCount', postsCount } as const)
 }
 export const getArticlesOfPage = (page: number): thunkType => async (dispatch) => {
     const response = await menuAPI.getArticlesOfPage(page)
-    dispatch(actionCreators.setPosts(response.results))
-    dispatch(actionCreators.setPostsCount(response.count))
+    dispatch(actions.setPosts(response.results))
+    dispatch(actions.setPostsCount(response.count))
 }

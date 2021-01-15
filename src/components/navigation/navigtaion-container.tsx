@@ -1,48 +1,52 @@
 import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
-import { getUserInfo, logoutUser } from '../../redux/reducers/auth-reducer'
-import { AppStateType } from '../../redux/redux-store'
+import {useDispatch, useSelector} from 'react-redux'
+import {actionsType, getUserInfo, logoutUser} from '../../redux/reducers/auth-reducer'
+import {dispatchType} from '../../redux/redux-store'
 import { mstpGetAuthenticationStatus, mstpGetUserPhoto, mstpGetUserUsername } from '../../redux/selectors/auth-selector'
-import Navigation from './navigation'
-
-type mapStateToPropsType = {
-    isAuthenticated: boolean
-    photo: string
-    username: string
-}
+import cn from "classnames";
+import s from "./navigation.module.css";
+import {NavLink} from "react-router-dom";
 
 
-type MapDispatchToPropsType = {
-    getUserInfo: () => void
-    logoutUser: () => void
-}
+function NavigationContainer() {
+    let [buttonText, setButtonText] = React.useState('>')
+    // let [divClass, setDivClass] = React.useState(s.non_active + ' ' + s.nav)
 
-type propsType = mapStateToPropsType & MapDispatchToPropsType
+    const dispatch = useDispatch<dispatchType<actionsType>>()
+    const isAuthenticated = useSelector(mstpGetAuthenticationStatus)
+    const photo = useSelector(mstpGetUserPhoto)
+    const username = useSelector(mstpGetUserUsername)
 
-function NavigationContainer(props: propsType) {
     useEffect(() => {
-        props.getUserInfo()
+        dispatch(getUserInfo())
     }, [])
 
-    function handleLogoutClick() {
-        props.logoutUser()
+
+    function handleClick() {
+        if (buttonText === '>') {
+            setButtonText('<')
+            // setDivClass(s.nav)
+        } else {
+            setButtonText('>')
+            // setDivClass(s.non_active + ' ' + s.nav)
+        }
     }
 
-    return <Navigation isAuthenticated={props.isAuthenticated}
-        photo={props.photo}
-        username={props.username}
-        handleLogoutClick={handleLogoutClick} />
+    function handleLogoutClick() {
+        dispatch(logoutUser())
+    }
+
+    return <><div className={cn({ [s.non_active]: buttonText === '>' }, s.nav)}>
+        <button onClick={handleClick}>{buttonText}</button>
+        {photo ? <img src={photo} />: null}
+        <NavLink to='/menu' activeClassName={s.active}>Menu</NavLink>
+        {(isAuthenticated)
+            ? <><NavLink to='/logout' activeClassName={s.active} onClick={handleLogoutClick}>Log Out</NavLink>
+                <NavLink to='/write' activeClassName={s.active}>Write</NavLink></>
+            : <><NavLink to='/login' activeClassName={s.active}>Log in</NavLink>
+                <NavLink to='/signup' activeClassName={s.active}>Sign up</NavLink></>}
+    </div></>
 }
 
 
-const mapStateToProps = (state: AppStateType): mapStateToPropsType => ({
-    isAuthenticated: mstpGetAuthenticationStatus(state),
-    photo: mstpGetUserPhoto(state),
-    username: mstpGetUserUsername(state)
-})
-
-
-export const NavigationContainerConnecter = connect(mapStateToProps, {
-    getUserInfo,
-    logoutUser
-})(NavigationContainer)
+export default NavigationContainer

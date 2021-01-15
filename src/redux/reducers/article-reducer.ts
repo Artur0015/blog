@@ -9,7 +9,7 @@ let initialState = {
 
 type initialStateType = typeof initialState
 
-type actionsType = inferActionsType<typeof actionCreators>
+export type actionsType = inferActionsType<typeof actions>
 
 export const articleReducer = (state: initialStateType = initialState, action: actionsType): initialStateType => {
     let stateCopy = { ...state }
@@ -30,7 +30,7 @@ export const articleReducer = (state: initialStateType = initialState, action: a
 }
 
 
-const actionCreators = {
+const actions = {
     setArticle: (article: articleType) => ({
         type: 'setArticle',
         article
@@ -50,13 +50,13 @@ type thunkType = baseThunkType<actionsType>
 
 export const getArticle = (articleId: number): thunkType => async (dispatch) => {
     const article = await menuAPI.getArticle(articleId)
-    dispatch(actionCreators.setArticle(article))
+    dispatch(actions.setArticle(article))
 
 }
 
 export const getArticleComments = (articleId: number): thunkType => async (dispatch) => {
     const comments = await menuAPI.getArticleComments(articleId)
-    dispatch(actionCreators.setComments(comments))
+    dispatch(actions.setComments(comments))
 }
 
 
@@ -70,6 +70,6 @@ export const addArticle = (article: articleType): thunkType => async (dispatch) 
 
 export const addComment = (articleId: number, comment: commentType): thunkType => async (dispatch) => {
    menuAPI.addComment(articleId, comment.text)
-    dispatch(actionCreators.addCommentToState(comment.text, comment.author))
+    dispatch(actions.addCommentToState(comment.text, comment.author))
 
 }

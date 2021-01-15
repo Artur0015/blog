@@ -27,7 +27,7 @@ export const authReducer = (state: userType = initialState, action: actionsType)
     }
 }
 
-const actionCreators = {
+const actions = {
     setUser: (username: string | null, photo: string | null) => ({
         type: 'setUserInfo',
         user: { isAuthenticated: true, username, photo }
@@ -35,7 +35,7 @@ const actionCreators = {
     deleteUser: () => ({ type: 'deleteUserInfo' } as const)
 }
 
-type actionsType = inferActionsType<typeof actionCreators>
+export type actionsType = inferActionsType<typeof actions>
 
 type ThunkTypeWithNoReturn = baseThunkType<actionsType>
 
@@ -44,7 +44,7 @@ type thunkTypeWithResponseTypeReturn = baseThunkType<actionsType, responseType>
 export const getUserInfo = (): ThunkTypeWithNoReturn => async (dispatch) => {
     const user = await userAPI.getUserInfo()
     if (user.isAuthenticated) {
-        dispatch(actionCreators.setUser(user.username, user.photo))
+        dispatch(actions.setUser(user.username, user.photo))
     }
 
 }
@@ -60,7 +60,7 @@ export const loginUser = (userCredentials: userCredentialsType): thunkTypeWithRe
 export const logoutUser = (): ThunkTypeWithNoReturn => async (dispatch) => {
     let response = (await userAPI.logoutUser())
     if (response.detail === 'OK') {
-        dispatch(actionCreators.deleteUser())
+        dispatch(actions.deleteUser())
     }
 
 }

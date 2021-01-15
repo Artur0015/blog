@@ -1,48 +1,60 @@
-import {connect, ConnectedProps} from "react-redux"
+import {useDispatch, useSelector} from "react-redux"
 import {articleType} from "../../redux/reducers/reducer-types"
 import {mstpGetUserUsername} from "../../redux/selectors/auth-selector"
-import Write from "./write"
 import {useHistory} from "react-router";
-import {AppStateType} from "../../redux/redux-store";
-import { addArticle} from "../../redux/reducers/article-reducer";
+import {dispatchType} from "../../redux/redux-store";
+import {actionsType, addArticle} from "../../redux/reducers/article-reducer";
+import * as Yup from "yup";
+import {ErrorMessage, Field, Form, Formik} from "formik";
+import s from "./write.module.css";
+import React from "react";
 
 
-type mapStateToPropsType = {
-    username: string
+const validationSchema = Yup.object({
+    header: Yup.string().required(),
+    text: Yup.string().required().min(20)
+})
+
+const initialValues = {
+    header: '',
+    text: ''
 }
 
-type mapDispatchToPropsType = {
-    addArticle: (article: articleType) => Promise<void>
-}
 
-type propsType = mapStateToPropsType & mapDispatchToPropsType
+function Write() {
+    const dispatch = useDispatch<dispatchType<actionsType>>()
+    const history = useHistory()
+    const username = useSelector(mstpGetUserUsername)
 
-
-function WriteAPI(props: propsType) {
-
-    let history = useHistory()
 
     async function handleSubmit(values: articleType) {
         const article = {
             header: values.header,
             text: values.text,
-            author: props.username
+            author: username
         }
-        await props.addArticle(article)
+        await dispatch(addArticle(article))
         history.push('/menu')
 
     }
 
-    return <Write handleSubmit={handleSubmit}/>
+    return (
+        <Formik validationSchema={validationSchema}
+                initialValues={initialValues}
+                onSubmit={handleSubmit}>
+            {formik => (
+                <Form className={s.form}>
+                    <h1>New Article</h1>
+                    <label htmlFor='header'>Article header</label>
+                    <Field name="header" />
+                    <ErrorMessage name='header'>{msg => <span>{msg}</span>}</ErrorMessage>
+                    <label>Article content</label>
+                    <Field name='text' as='textarea' />
+                    <ErrorMessage name='text'>{msg => <span>{msg}</span>}</ErrorMessage>
+                    <button disabled={false}>Save</button>
+
+                </Form>)}
+        </Formik>)
 }
 
-const mapStateToProps = (state: AppStateType): mapStateToPropsType => ({
-    username: mstpGetUserUsername(state)
-})
-
-const WriteContainer = connect(mapStateToProps, {
-    addArticle,
-})(WriteAPI)
-
-
-export default WriteContainer
+export default Write

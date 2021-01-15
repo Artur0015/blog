@@ -1,30 +1,63 @@
-import { connect } from 'react-redux'
-import { signupUser } from "../../redux/reducers/auth-reducer"
-import Signup from "./signup"
+import {useDispatch} from 'react-redux'
+import {actionsType, signupUser} from "../../redux/reducers/auth-reducer"
 import { useHistory } from "react-router-dom";
-import { responseType, userCredentialsType } from '../../redux/reducers/reducer-types'
+import { userCredentialsType } from '../../redux/reducers/reducer-types'
+import {dispatchType} from "../../redux/redux-store";
+import * as Yup from "yup";
+import s from "../login/login.module.css";
+import {ErrorMessage, Field, Form, Formik} from "formik";
 
-type propsType = {
-    signupUser: (credenrials: userCredentialsType) => Promise<responseType>
+
+const initialValues = {
+    username: '',
+    password: '',
+    passwordConfirmation: ''
 }
 
-function SignupContainerWithApi(props: propsType) {
-    let history = useHistory()
+const validationSchema = Yup.object({
+    username: Yup.string().required('Username is required'),
+    password: Yup.string().required('Passwod is required'),
+    passwordConfirmation: Yup.string().required('You must confirm password')
+        .oneOf([Yup.ref('password'), null], 'Passwords must match')
+})
+
+
+function SignupContainer() {
+    const dispatch = useDispatch<dispatchType<actionsType>>()
+    const history = useHistory()
+
+
     async function handleSubmit(values: userCredentialsType, ev: any) {
         console.log('in handle submit');
 
-        let response = await props.signupUser({ username: values.username, password: values.password })
+        let response = await dispatch(signupUser({username: values.username, password: values.password}))
         if (response.detail === 'Username is already taken') {
-            ev.setErrors({ username: 'Username is already taken' })
-        }
-        else if (response.detail === 'OK') {
+            ev.setErrors({username: 'Username is already taken'})
+        } else if (response.detail === 'OK') {
             history.push('/login')
         }
 
     }
-    return <Signup handleSubmit={handleSubmit} />
+
+    return <>
+        <div className={s.div}/>
+        <Formik initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={handleSubmit}>
+            {formik => (
+                <Form className={s.form}>
+                    <h1>Sign up</h1>
+                    <Field placeholder='Username' className={s.input} name='username'/>
+                    <ErrorMessage name='username'>{msg => <span>{msg}</span>}</ErrorMessage>
+                    <Field placeholder='Password' className={s.input} name='password' type='password'/>
+                    <ErrorMessage name='password'>{msg => <span>{msg}</span>}</ErrorMessage>
+                    <Field placeholder='Repeat Password' className={s.input} name='passwordConfirmation'
+                           type='password'/>
+                    <ErrorMessage name='passwordConfirmation'>{msg => <span>{msg}</span>}</ErrorMessage>
+                    <button disabled={!(formik.isValid && formik.dirty) || formik.isSubmitting}>Sign up</button>
+                </Form>
+            )}
+        </Formik>
+    </>
 }
-
-const SignupContainer = connect(state => ({}), { signupUser })(SignupContainerWithApi)
-
 export default SignupContainer
