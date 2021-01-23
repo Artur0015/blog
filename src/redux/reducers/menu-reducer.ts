@@ -1,6 +1,7 @@
-import { baseThunkType, inferActionsType} from './../redux-store';
-import { menuAPI } from "../../DAL/articles-api"
-import { articleType } from "./reducer-types";
+import {baseThunkType, inferActionsType} from './../redux-store';
+import {menuAPI} from "../../DAL/articles-api"
+import {articleType} from "./reducer-types";
+import {statusCodes} from "../../DAL/response-status-codes";
 
 
 let initialState = {
@@ -15,7 +16,7 @@ type initialStateType = typeof initialState
 export type actionsType = inferActionsType<typeof actions>
 
 export const menuReducer = (state = initialState, action: actionsType): initialStateType => {
-    let stateCopy = { ...state }
+    let stateCopy = {...state}
     switch (action.type) {
         case 'setPosts':
             stateCopy.posts = [...state.posts]
@@ -33,11 +34,13 @@ export const menuReducer = (state = initialState, action: actionsType): initialS
 export type thunkType = baseThunkType<actionsType>
 
 const actions = {
-    setPosts: (posts: Array<articleType>) => ({ type: 'setPosts', posts } as const),
-    setPostsCount: (postsCount: number) => ({ type: 'setPostsCount', postsCount } as const)
+    setPosts: (posts: Array<articleType>) => ({type: 'setPosts', posts} as const),
+    setPostsCount: (postsCount: number) => ({type: 'setPostsCount', postsCount} as const)
 }
 export const getArticlesOfPage = (page: number): thunkType => async (dispatch) => {
     const response = await menuAPI.getArticlesOfPage(page)
-    dispatch(actions.setPosts(response.results))
-    dispatch(actions.setPostsCount(response.count))
+    if (response.status === statusCodes.OK) {
+        dispatch(actions.setPosts(response.data.results))
+        dispatch(actions.setPostsCount(response.data.count))
+    }
 }

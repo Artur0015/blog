@@ -16,7 +16,6 @@ function NavigationContainer() {
     const isAuthenticated = useSelector(mstpGetAuthenticationStatus)
     const photo = useSelector(mstpGetUserPhoto)
     const username = useSelector(mstpGetUserUsername)
-
     useEffect(() => {
         dispatch(getUserInfo())
     }, [])

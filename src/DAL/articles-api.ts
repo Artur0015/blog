@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { articleType, commentType, responseType } from './../redux/reducers/reducer-types';
+import { articleType, commentType} from './../redux/reducers/reducer-types';
+import {getResponse} from "./user-api";
 
 
 const DEFAULT_URL = 'http://localhost:8000/api/articles/'
@@ -16,23 +17,24 @@ export type getArticlesOfPageResponseType = {
 
 export const menuAPI = {
     async getArticlesOfPage(page: number) {
-        return (await axios.get<getArticlesOfPageResponseType>(`${DEFAULT_URL}?page=${page}`)).data
+        return getResponse<getArticlesOfPageResponseType>(async () => await axios.get(`${DEFAULT_URL}?page=${page}`))
 
     },
     async getArticle(id: number) {
-        return (await axios.get<articleType>(DEFAULT_URL + id + '/')).data
+        return getResponse<articleType>(async () => await axios.get(DEFAULT_URL + id + '/'))
     },
     async getArticleComments(articleId: number) {
-        return (await axios.get<Array<commentType>>(DEFAULT_URL + articleId + '/comments/')).data
+        return getResponse<Array<commentType>>(async () => await axios.get(DEFAULT_URL + articleId + '/comments/'))
     },
     async changeArticle(changedArticle: articleType) {
-        return (await axios.put<articleType>(DEFAULT_URL + changedArticle.id + '/', changedArticle)).data
+        return getResponse<articleType>(async () => await axios.put(DEFAULT_URL + changedArticle.id + '/', changedArticle))
     },
     async addArticle(article: articleType) {
-        return (await axios.post<articleType>(DEFAULT_URL, article)).data
+        return getResponse<articleType>(async () => await axios.post(DEFAULT_URL, article))
     },
     async addComment(articleId: number, commentText: string) {
-        return (await axios.post<responseType>(DEFAULT_URL + articleId + '/comments/', { text: commentText })).data
+        return getResponse<commentType>(async () => await axios.post(DEFAULT_URL + articleId + '/comments/',
+            { text: commentText }))
     }
 }
 

@@ -1,4 +1,4 @@
-export type commentType = {
+ export type commentType = {
     text: string,
     author: string,
 }
@@ -10,6 +10,7 @@ export type articleType = {
     author?: string
     photo?: string
     pubDate?: string
+    isOwner?: boolean
 }
 
 export type userType = {
@@ -23,7 +24,4 @@ export type userCredentialsType = {
     password: string
 }
 
-export type responseType = {
-    detail: string
-}
 

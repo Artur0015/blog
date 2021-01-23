@@ -7,6 +7,7 @@ import React from "react";
 import {ErrorMessage, Field, Form, Formik, FormikHelpers} from "formik";
 import s from "./login.module.css";
 import * as Yup from "yup";
+import {statusCodes} from "../../DAL/response-status-codes";
 
 
 export interface loginValuesType extends userCredentialsType {
@@ -31,11 +32,11 @@ function LoginContainer() {
 
 
     async function handleSubmit(values: userCredentialsType, ev: FormikHelpers<loginValuesType>) {
-        const response = await dispatch(loginUser(values))
-        if (response.detail === 'Invalid Credentials') {
+        const statusCode = await dispatch(loginUser(values))
+        if (statusCode === statusCodes.UNAUTHORIZED) {
             ev.setErrors({password: "Invalid Credentials"})
             ev.setSubmitting(false)
-        } else if (response.detail === 'OK') {
+        } else if (statusCode === statusCodes.OK) {
             history.push('/menu')
         }
     }

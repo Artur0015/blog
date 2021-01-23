@@ -1,6 +1,7 @@
-import { baseThunkType, inferActionsType} from './../redux-store';
+import { baseThunkType, inferActionsType} from '../redux-store';
 import { menuAPI } from "../../DAL/articles-api"
 import {articleType, commentType} from "./reducer-types";
+import {statusCodes} from "../../DAL/response-status-codes";
 
 let initialState = {
     article: {} as articleType,
@@ -49,27 +50,33 @@ const actions = {
 type thunkType = baseThunkType<actionsType>
 
 export const getArticle = (articleId: number): thunkType => async (dispatch) => {
-    const article = await menuAPI.getArticle(articleId)
-    dispatch(actions.setArticle(article))
-
+    const response = await menuAPI.getArticle(articleId)
+    if(response.status === statusCodes.OK) {
+        dispatch(actions.setArticle(response.data))
+    }
 }
 
 export const getArticleComments = (articleId: number): thunkType => async (dispatch) => {
-    const comments = await menuAPI.getArticleComments(articleId)
-    dispatch(actions.setComments(comments))
+    const response = (await menuAPI.getArticleComments(articleId))
+    if(response.status === statusCodes.OK) {
+        dispatch(actions.setComments(response.data))
+    }
 }
 
+export const addComment = (articleId: number, commentText: string): thunkType => async (dispatch) => {
+   const response = await menuAPI.addComment(articleId, commentText)
+    if(response.status === statusCodes.CREATED) {
+        dispatch(actions.addCommentToState(response.data.text,response.data.author))
+    }
+}
 
 export const changeArticle = (changedArticle: articleType): thunkType => async (dispatch) => {
-    menuAPI.changeArticle(changedArticle)
+    const response = await menuAPI.changeArticle(changedArticle)
+    if(response.status === statusCodes.OK) {
+        dispatch(actions.setArticle(response.data))
+    }
 }
 
 export const addArticle = (article: articleType): thunkType => async (dispatch) => {
     await menuAPI.addArticle(article)
-}
-
-export const addComment = (articleId: number, comment: commentType): thunkType => async (dispatch) => {
-   menuAPI.addComment(articleId, comment.text)
-    dispatch(actions.addCommentToState(comment.text, comment.author))
-
 }

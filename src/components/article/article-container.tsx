@@ -14,6 +14,7 @@ import {mstpGetArticle, mstpGetComments} from "../../redux/selectors/article-sel
 import {mstpGetUserUsername, mstpGetAuthenticationStatus} from "../../redux/selectors/auth-selector"
 import {dispatchType} from "../../redux/redux-store"
 import {useDispatch, useSelector} from "react-redux";
+import {articleType} from "../../redux/reducers/reducer-types";
 
 
 function ArticleContainer() {
@@ -24,7 +25,6 @@ function ArticleContainer() {
     const articleId = Number(useParams<{ articleId: string }>().articleId)
     const article = useSelector(mstpGetArticle)
     const comments = useSelector(mstpGetComments)
-    const username = useSelector(mstpGetUserUsername)
     const isAuthenticated = useSelector(mstpGetAuthenticationStatus)
 
     useEffect(() => {
@@ -40,15 +40,20 @@ function ArticleContainer() {
 
 
     function handleCommentAddButtonClick(commentText: string) {
-        dispatch(addComment(articleId, {text: commentText, author: username}))
+        dispatch(addComment(articleId, commentText))
+    }
+
+    function handleArticleSave(article: articleType) {
+        dispatch(changeArticle({...article, id: articleId}))
     }
 
     return <div>{isLoadingArticle
         ? <Preloader/>
-        : <Article article={article} changeArticle={changeArticle}/>}
+        : <Article article={article} changeArticle={handleArticleSave}/>}
         {areLoadingComments
             ? <Preloader/>
-            : <><Comments comments={comments} handleClick={handleCommentAddButtonClick} isAuthenticated={isAuthenticated}/>
+            : <><Comments comments={comments} handleClick={handleCommentAddButtonClick}
+                          isAuthenticated={isAuthenticated}/>
             </>}
     </div>
 }

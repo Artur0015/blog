@@ -1,11 +1,12 @@
 import {useDispatch} from 'react-redux'
 import {actionsType, signupUser} from "../../redux/reducers/auth-reducer"
 import { useHistory } from "react-router-dom";
-import { userCredentialsType } from '../../redux/reducers/reducer-types'
+import {userCredentialsType} from '../../redux/reducers/reducer-types'
 import {dispatchType} from "../../redux/redux-store";
 import * as Yup from "yup";
 import s from "../login/login.module.css";
 import {ErrorMessage, Field, Form, Formik} from "formik";
+import {statusCodes} from "../../DAL/response-status-codes";
 
 
 const initialValues = {
@@ -30,10 +31,10 @@ function SignupContainer() {
     async function handleSubmit(values: userCredentialsType, ev: any) {
         console.log('in handle submit');
 
-        let response = await dispatch(signupUser({username: values.username, password: values.password}))
-        if (response.detail === 'Username is already taken') {
+        let statusCode = await dispatch<Promise<number>>(signupUser({username: values.username, password: values.password}))
+        if (statusCode === statusCodes.CONFLICT) {
             ev.setErrors({username: 'Username is already taken'})
-        } else if (response.detail === 'OK') {
+        } else if (statusCode === statusCodes.CREATED) {
             history.push('/login')
         }
 
