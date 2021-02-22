@@ -1,71 +1,73 @@
-import { inferActionsType, baseThunkType } from './../redux-store';
-import { userAPI } from "../../DAL/user-api"
-import {userCredentialsType, userType} from "./reducer-types";
+import {InferActionsType, BaseThunkType} from '../common-types';
+import {usersApi} from "../../DAL/users-api"
+import {UserCredentialsType, UserType} from "../common-types";
 import {statusCodes} from "../../DAL/response-status-codes";
 
 
-let initialState = {isAuthenticated: false} as userType
+const initialState = {
+    id: null as number | null,
+    isAuthenticated: false,
+    username: null as string | null,
+    photo: null as string | null
+}
 
+type InitialStateType = typeof initialState
 
+export type ActionsType = InferActionsType<typeof actions>
 
-export const authReducer = (state: userType = initialState, action: actionsType): userType => {
-    let stateCopy = { ...state }
+export const authReducer = (state: InitialStateType = initialState, action: ActionsType): InitialStateType => {
     switch (action.type) {
-        case 'setUserInfo':
-            stateCopy.isAuthenticated = action.user.isAuthenticated
-            stateCopy.username = action.user.username
-            stateCopy.photo = action.user.photo
-            return stateCopy
-        case 'deleteUserInfo':
-            stateCopy.isAuthenticated = false
-            stateCopy.username = null
-            stateCopy.photo = null
-            return stateCopy
+        case "setUserInfo":
+            return {...action.user, isAuthenticated: true}
+
+        case "deleteUserInfo":
+            return {
+                id: null,
+                isAuthenticated: false,
+                username: null,
+                photo: null
+            }
         default:
-            return stateCopy
-
-
+            return state
     }
 }
 
 const actions = {
-    setUser: (username: string | null, photo: string | null) => ({
-        type: 'setUserInfo',
-        user: { isAuthenticated: true, username, photo }
-    } as const),
-    deleteUser: () => ({ type: 'deleteUserInfo' } as const)
+    setUser: (user: UserType) => ({type: 'setUserInfo', user} as const),
+    deleteUser: () => ({type: 'deleteUserInfo'} as const)
 }
 
-export type actionsType = inferActionsType<typeof actions>
 
-type ThunkTypeWithNoReturn = baseThunkType<actionsType>
+type ThunkType = BaseThunkType<ActionsType>
 
-type thunkTypeWithNumberTypeReturn = baseThunkType<actionsType, number>
+type ThunkTypeWithNumberReturn = BaseThunkType<ActionsType, number>
 
-export const getUserInfo = (): ThunkTypeWithNoReturn => async (dispatch) => {
-    const response = await userAPI.getUserInfo()
-    if (response.status === statusCodes.OK){
-        dispatch(actions.setUser(response.data.username, response.data.photo))
+
+export const getUserInfo = (): ThunkType => async (dispatch) => {
+    const response = await usersApi.getMyUserInfo()
+    if (response.status === statusCodes.OK) {
+        dispatch(actions.setUser(response.data))
     }
 }
 
-export const loginUser = (userCredentials: userCredentialsType): thunkTypeWithNumberTypeReturn => async (dispatch) => {
-    let response = await userAPI.loginUser(userCredentials)
+export const loginUser = (userCredentials: UserCredentialsType): ThunkTypeWithNumberReturn => async (dispatch) => {
+    const response = await usersApi.loginUser(userCredentials)
     if (response.status === statusCodes.OK) {
-        dispatch(actions.setUser(response.data.username, response.data.photo))
+        dispatch(actions.setUser(response.data))
     }
     return response.status
 }
 
-export const logoutUser = (): ThunkTypeWithNoReturn => async (dispatch) => {
-    let response = (await userAPI.logoutUser())
-    if (response.status === statusCodes.OK) {
+export const logoutUser = (): ThunkType => async (dispatch) => {
+    const response = (await usersApi.logoutUser())
+    if (response.status === statusCodes.OK_NO_CONTENT) {
         dispatch(actions.deleteUser())
     }
 
 }
 
-export const signupUser = (credentials: userCredentialsType): thunkTypeWithNumberTypeReturn => async (dispatch) => {
-    const response = await userAPI.signupUser(credentials)
+
+export const signupUser = (credentials: UserCredentialsType): ThunkTypeWithNumberReturn => async (dispatch) => {
+    const response = await usersApi.signupUser(credentials)
     return response.status
 }

@@ -1,8 +1,8 @@
 import {useHistory} from "react-router-dom";
-import {userCredentialsType} from "../../redux/reducers/reducer-types";
+import {UserCredentialsType} from "../../redux/common-types";
 import {useDispatch} from "react-redux";
-import {actionsType, loginUser} from "../../redux/reducers/auth-reducer";
-import {dispatchType} from "../../redux/redux-store";
+import {ActionsType, loginUser} from "../../redux/reducers/auth-reducer";
+import {DispatchType} from "../../redux/common-types";
 import React from "react";
 import {ErrorMessage, Field, Form, Formik, FormikHelpers} from "formik";
 import s from "./login.module.css";
@@ -10,39 +10,38 @@ import * as Yup from "yup";
 import {statusCodes} from "../../DAL/response-status-codes";
 
 
-export interface loginValuesType extends userCredentialsType {
+export interface loginValuesType extends UserCredentialsType {
     rememberMe: boolean
 }
 
-let initialValues = {
+const initialValues = {
     username: '',
     password: '',
     rememberMe: false
 }
 
-let validationSchema = Yup.object({
+const validationSchema = Yup.object({
     username: Yup.string().required('Username is required'),
     password: Yup.string().required('Password is required'),
 })
 
 
-function LoginContainer() {
+function Login() {
+
     const history = useHistory()
-    const dispatch = useDispatch<dispatchType<actionsType>>()
+    const dispatch = useDispatch<DispatchType<ActionsType>>()
 
-
-    async function handleSubmit(values: userCredentialsType, ev: FormikHelpers<loginValuesType>) {
-        const statusCode = await dispatch(loginUser(values))
-        if (statusCode === statusCodes.UNAUTHORIZED) {
-            ev.setErrors({password: "Invalid Credentials"})
-            ev.setSubmitting(false)
-        } else if (statusCode === statusCodes.OK) {
+    async function handleSubmit(values: UserCredentialsType, {setErrors}: FormikHelpers<loginValuesType>) {
+        const status = await dispatch(loginUser(values))
+        if(status === statusCodes.OK) {
             history.push('/menu')
+        } else {
+            setErrors({password: 'Invalid credentials'})
         }
     }
 
-    return <>
-        <div className={s.div}/>
+
+    return <div className={s.div}>
         <Formik initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={handleSubmit}>
@@ -54,13 +53,13 @@ function LoginContainer() {
                 <ErrorMessage name='password'>{msg => <span>{msg}</span>}</ErrorMessage>
                 <Field type='checkbox' className={s.checkbox} name='rememberMe'/>
                 <label>Remember me</label>
-                <button type='submit' disabled={!(formik.isValid && formik.dirty) || formik.isSubmitting}>Log in
+                <button type='submit'>Log in
                 </button>
             </Form>)
             }
         </Formik>
-    </>
+    </div>
 }
 
 
-export default LoginContainer
+export default Login

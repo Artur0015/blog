@@ -1,19 +1,23 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import s from './menu.module.css'
-import {articleType} from "../../redux/reducers/reducer-types";
+import {ArticleType} from "../../redux/common-types";
 
 
-const Post = (props: articleType) => {
-    if (props.text.length >= 300) {
-        props.text = props.text.slice(0, 300) + '...'
+type PropsType = {
+    article: ArticleType
+}
+
+const Post = ({article}: PropsType) => {
+    if (article.text.length >= 300) {
+        article.text = article.text.slice(0, 300) + '...'
     }
 
     return <div className={s.post}>
-        <NavLink to={`/article/${props.id}`} style={{ textDecoration: 'none', color: 'black' }}>
-            <h1>{props.header}</h1>
-            <p>{props.text}</p></NavLink>
-        <span>By <a href='/'>{props.author}</a></span>
+        <NavLink to={`/article/${article.id}`} style={{color: 'black'}}>
+            <h1>{article.header}</h1>
+            <p>{article.text}</p></NavLink>
+        <span>By <NavLink to={'/profile/'+article.author}>{article.author}</NavLink></span>
     </div>
 }
 

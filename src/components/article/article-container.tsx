@@ -1,5 +1,5 @@
 import {
-    actionsType,
+    ActionsType,
     addComment,
     changeArticle,
     getArticle,
@@ -10,51 +10,54 @@ import {useParams} from "react-router-dom"
 import Article from "./article"
 import Comments from "./comments"
 import Preloader from "../preloader/preloader"
-import {mstpGetArticle, mstpGetComments} from "../../redux/selectors/article-selector"
-import {mstpGetUserUsername, mstpGetAuthenticationStatus} from "../../redux/selectors/auth-selector"
-import {dispatchType} from "../../redux/redux-store"
+import {DispatchType} from "../../redux/common-types"
 import {useDispatch, useSelector} from "react-redux";
-import {articleType} from "../../redux/reducers/reducer-types";
+import {getArticleCommentsSelector, getArticleSelector, getCurrentUserSelector} from "../../redux/selectors";
+import Error from "../error/error";
 
 
 function ArticleContainer() {
-    let [isLoadingArticle, setArticleLoading] = useState(false)
-    let [areLoadingComments, setCommentsLoading] = useState(false)
+    const [isLoadingArticle, setArticleLoading] = useState(true)
+    const [areLoadingComments, setCommentsLoading] = useState(true)
 
-    const dispatch: dispatchType<actionsType> = useDispatch()
+    const dispatch: DispatchType<ActionsType> = useDispatch()
     const articleId = Number(useParams<{ articleId: string }>().articleId)
-    const article = useSelector(mstpGetArticle)
-    const comments = useSelector(mstpGetComments)
-    const isAuthenticated = useSelector(mstpGetAuthenticationStatus)
+    const article = useSelector(getArticleSelector)
+    const comments = useSelector(getArticleCommentsSelector)
+    const user = useSelector(getCurrentUserSelector)
+    const isOwner = article.author === user.username
 
     useEffect(() => {
-        setArticleLoading(true)
-        setCommentsLoading(true);
         dispatch(getArticle(articleId)).then(() => {
             setArticleLoading(false)
         })
         dispatch(getArticleComments(articleId)).then(() => {
             setCommentsLoading(false)
         })
-    }, [])
+    }, [articleId])
 
 
     function handleCommentAddButtonClick(commentText: string) {
         dispatch(addComment(articleId, commentText))
     }
 
-    function handleArticleSave(article: articleType) {
-        dispatch(changeArticle({...article, id: articleId}))
+    function handleArticleSave(text: string) {
+        dispatch(changeArticle(articleId, text))
     }
 
-    return <div>{isLoadingArticle
-        ? <Preloader/>
-        : <Article article={article} changeArticle={handleArticleSave}/>}
-        {areLoadingComments
-            ? <Preloader/>
-            : <><Comments comments={comments} handleClick={handleCommentAddButtonClick}
-                          isAuthenticated={isAuthenticated}/>
-            </>}
+
+    if (isLoadingArticle || areLoadingComments) {
+        return <Preloader/>
+    }
+
+    if (!article.id) {
+        return <Error/>
+    }
+
+    return <div>
+        <Article article={article} changeArticle={handleArticleSave} isOwner={isOwner}/>
+        <Comments comments={comments} addComment={handleCommentAddButtonClick}
+                  isAuthenticated={user.isAuthenticated}/>
     </div>
 }
 

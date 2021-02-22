@@ -1,18 +1,18 @@
 import s from './article.module.css'
-import React, {ChangeEvent, useCallback, useState} from 'react'
+import React, {ChangeEvent, useState} from 'react'
 import TextareaAutosize from 'react-textarea-autosize';
-import {articleType} from "../../redux/reducers/reducer-types"
+import {ArticleType} from "../../redux/common-types"
 
 type propsType = {
-    article: articleType,
-    changeArticle: (article: articleType) => void
+    article: ArticleType,
+    changeArticle: (text: string) => void
+    isOwner: boolean
 }
 
 
-function Article(props: propsType) {
-    let [isEditMode, setEditMode] = useState(false)
-    let [article, setArticle] = useState(props.article)
-    let [text, setText] = useState(props.article.text)
+function Article({article, changeArticle, isOwner}: propsType) {
+    const [isEditMode, setEditMode] = useState(false)
+    const [text, setText] = useState(article.text)
 
 
     function activateEditMode() {
@@ -25,9 +25,8 @@ function Article(props: propsType) {
     }
 
     function saveArticleChanges() {
-        props.changeArticle({header: props.article.header, text})
+        changeArticle(text)
         setEditMode(false)
-        setArticle({...article, text: text})
     }
 
     function handleChange(evt: ChangeEvent<HTMLTextAreaElement>) {
@@ -38,19 +37,19 @@ function Article(props: propsType) {
 
     return (<div className={s.article}>
         <h1>{article.header}</h1>
-        {props.article.isOwner
+        {isOwner
             ? isEditMode
                 ? <>
-                    <TextareaAutosize onChange={handleChange} name='text' value={text}></TextareaAutosize>
+                    <TextareaAutosize onChange={handleChange} name='text' value={text} />
                     <button onClick={saveArticleChanges}>Save</button>
                     <button onClick={dropChanges}>Back</button>
 
                 </>
                 : <>
-                    <p>{props.article.text}</p>
+                    <p>{article.text}</p>
                     <button onClick={activateEditMode}>Edit</button>
                 </>
-            : <p>{props.article.text}</p>}
+            : <p>{article.text}</p>}
 
         <span>By <a href='/'>{article.author}</a></span>
     </div>)

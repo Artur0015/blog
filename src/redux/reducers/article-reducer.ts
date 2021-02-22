@@ -1,30 +1,25 @@
-import { baseThunkType, inferActionsType} from '../redux-store';
-import { menuAPI } from "../../DAL/articles-api"
-import {articleType, commentType} from "./reducer-types";
+import {BaseArticleType, BaseThunkType, InferActionsType} from '../common-types';
+import {menuAPI} from "../../DAL/articles-api"
+import {ArticleType, CommentType} from "../common-types";
 import {statusCodes} from "../../DAL/response-status-codes";
 
-let initialState = {
-    article: {} as articleType,
-    comments: [] as Array<commentType>,
+const initialState = {
+    article: {} as ArticleType,
+    comments: [] as Array<CommentType>,
 }
 
-type initialStateType = typeof initialState
+type InitialStateType = typeof initialState
 
-export type actionsType = inferActionsType<typeof actions>
+export type ActionsType = InferActionsType<typeof actions>
 
-export const articleReducer = (state: initialStateType = initialState, action: actionsType): initialStateType => {
-    let stateCopy = { ...state }
+export const articleReducer = (state: InitialStateType = initialState, action: ActionsType): InitialStateType => {
     switch (action.type) {
         case 'setArticle':
-            stateCopy.article = action.article
-            return stateCopy
+            return {...state, article: action.article}
         case 'setComments':
-            stateCopy.comments = action.comments
-            return stateCopy
-        case 'addComent':
-            stateCopy.comments = [...state.comments]
-            stateCopy.comments.push({ text: action.text, author: action.author });
-            return stateCopy
+            return {...state, comments: action.comments}
+        case 'addComment':
+            return {...state, comments: [...state.comments, action.comment]}
         default:
             return state
     }
@@ -32,51 +27,41 @@ export const articleReducer = (state: initialStateType = initialState, action: a
 
 
 const actions = {
-    setArticle: (article: articleType) => ({
-        type: 'setArticle',
-        article
-    } as const),
-    setComments: (comments: Array<commentType>) => ({
-        type: 'setComments',
-        comments
-    } as const),
-    addCommentToState: (text: string, author: string) => ({
-        type: 'addComent',
-        text,
-        author
-    } as const)
+    setArticle: (article: ArticleType) => ({type: 'setArticle', article} as const),
+    setComments: (comments: Array<CommentType>) => ({type: 'setComments', comments} as const),
+    addCommentToState: (comment: CommentType) => ({type: 'addComment', comment} as const)
 }
 
-type thunkType = baseThunkType<actionsType>
+type ThunkType = BaseThunkType<ActionsType>
 
-export const getArticle = (articleId: number): thunkType => async (dispatch) => {
+export const getArticle = (articleId: number): ThunkType => async (dispatch) => {
     const response = await menuAPI.getArticle(articleId)
-    if(response.status === statusCodes.OK) {
+    if (response.status === statusCodes.OK) {
         dispatch(actions.setArticle(response.data))
     }
 }
 
-export const getArticleComments = (articleId: number): thunkType => async (dispatch) => {
+export const getArticleComments = (articleId: number): ThunkType => async (dispatch) => {
     const response = (await menuAPI.getArticleComments(articleId))
-    if(response.status === statusCodes.OK) {
+    if (response.status === statusCodes.OK) {
         dispatch(actions.setComments(response.data))
     }
 }
 
-export const addComment = (articleId: number, commentText: string): thunkType => async (dispatch) => {
-   const response = await menuAPI.addComment(articleId, commentText)
-    if(response.status === statusCodes.CREATED) {
-        dispatch(actions.addCommentToState(response.data.text,response.data.author))
+export const addComment = (articleId: number, commentText: string): ThunkType => async (dispatch) => {
+    const response = await menuAPI.addComment(articleId, commentText)
+    if (response.status === statusCodes.CREATED) {
+        dispatch(actions.addCommentToState(response.data))
     }
 }
 
-export const changeArticle = (changedArticle: articleType): thunkType => async (dispatch) => {
-    const response = await menuAPI.changeArticle(changedArticle)
-    if(response.status === statusCodes.OK) {
+export const changeArticle = (articleId: number, text: string): ThunkType => async (dispatch) => {
+    const response = await menuAPI.changeArticle(articleId, text)
+    if (response.status === statusCodes.OK) {
         dispatch(actions.setArticle(response.data))
     }
 }
 
-export const addArticle = (article: articleType): thunkType => async (dispatch) => {
+export const addArticle = (article: BaseArticleType): ThunkType => async (dispatch) => {
     await menuAPI.addArticle(article)
 }

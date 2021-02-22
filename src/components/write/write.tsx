@@ -1,18 +1,17 @@
 import {useDispatch, useSelector} from "react-redux"
-import {articleType} from "../../redux/reducers/reducer-types"
-import {mstpGetUserUsername} from "../../redux/selectors/auth-selector"
 import {useHistory} from "react-router";
-import {dispatchType} from "../../redux/redux-store";
-import {actionsType, addArticle} from "../../redux/reducers/article-reducer";
+import {DispatchType} from "../../redux/common-types";
+import {ActionsType, addArticle} from "../../redux/reducers/article-reducer";
 import * as Yup from "yup";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import s from "./write.module.css";
 import React from "react";
+import {getCurrentUserSelector} from "../../redux/selectors";
 
 
 const validationSchema = Yup.object({
     header: Yup.string().required(),
-    text: Yup.string().required().min(20)
+    text: Yup.string().required().min(5)
 })
 
 const initialValues = {
@@ -22,21 +21,23 @@ const initialValues = {
 
 
 function Write() {
-    const dispatch = useDispatch<dispatchType<actionsType>>()
+    const dispatch = useDispatch<DispatchType<ActionsType>>()
     const history = useHistory()
-    const username = useSelector(mstpGetUserUsername)
+    const user = useSelector(getCurrentUserSelector)
 
 
-    async function handleSubmit(values: articleType) {
-        const article = {
-            header: values.header,
-            text: values.text,
-            author: username
+    async function handleSubmit(values: typeof initialValues) {
+        if(user.isAuthenticated) {
+            const article = {
+                header: values.header,
+                text: values.text,
+                author: user.username
+            }
+            await dispatch(addArticle(article))
+            history.push('/menu')
         }
-        await dispatch(addArticle(article))
-        history.push('/menu')
-
     }
+
 
     return (
         <Formik validationSchema={validationSchema}
@@ -51,7 +52,7 @@ function Write() {
                     <label>Article content</label>
                     <Field name='text' as='textarea' />
                     <ErrorMessage name='text'>{msg => <span>{msg}</span>}</ErrorMessage>
-                    <button disabled={false}>Save</button>
+                    <button>Save</button>
 
                 </Form>)}
         </Formik>)
