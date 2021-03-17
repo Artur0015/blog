@@ -1,23 +1,17 @@
 import {useHistory} from "react-router-dom";
-import {UserCredentialsType} from "../../redux/common-types";
 import {useDispatch} from "react-redux";
 import {ActionsType, loginUser} from "../../redux/reducers/auth-reducer";
-import {DispatchType} from "../../redux/common-types";
+import {CredentialsType, DispatchType} from "../../redux/common-types";
 import React from "react";
-import {ErrorMessage, Field, Form, Formik, FormikHelpers} from "formik";
-import s from "./login.module.css";
+import {FormikHelpers, useFormik} from "formik";
+import s from "./signup-login.module.css";
 import * as Yup from "yup";
 import {statusCodes} from "../../DAL/response-status-codes";
+import {Button, Checkbox, FormControlLabel, TextField} from "@material-ui/core";
 
 
-export interface loginValuesType extends UserCredentialsType {
+export type LoginCredentialsType = CredentialsType & {
     rememberMe: boolean
-}
-
-const initialValues = {
-    username: '',
-    password: '',
-    rememberMe: false
 }
 
 const validationSchema = Yup.object({
@@ -31,34 +25,49 @@ function Login() {
     const history = useHistory()
     const dispatch = useDispatch<DispatchType<ActionsType>>()
 
-    async function handleSubmit(values: UserCredentialsType, {setErrors}: FormikHelpers<loginValuesType>) {
+
+    async function handleSubmit(values: LoginCredentialsType, {
+        setErrors,
+        setSubmitting,
+    }: FormikHelpers<LoginCredentialsType>) {
+        setSubmitting(true)
         const status = await dispatch(loginUser(values))
-        if(status === statusCodes.OK) {
-            history.push('/menu')
+        if (status === statusCodes.OK) {
+            history.push('/')
         } else {
             setErrors({password: 'Invalid credentials'})
         }
+        setSubmitting(false)
     }
 
+    const formik = useFormik<LoginCredentialsType>({
+        initialValues: {
+            username: '',
+            password: '',
+            rememberMe: false
+        },
+        validationSchema: validationSchema,
+        onSubmit: handleSubmit
+    })
 
-    return <div className={s.div}>
-        <Formik initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={handleSubmit}>
-            {(formik) => (<Form className={s.form}>
-                <h1>Log in</h1>
-                <Field placeholder='Username' className={s.input} name='username'/>
-                <ErrorMessage name='username'>{msg => <span>{msg}</span>}</ErrorMessage>
-                <Field placeholder='Password' className={s.input} name='password' type='password'/>
-                <ErrorMessage name='password'>{msg => <span>{msg}</span>}</ErrorMessage>
-                <Field type='checkbox' className={s.checkbox} name='rememberMe'/>
-                <label>Remember me</label>
-                <button type='submit'>Log in
-                </button>
-            </Form>)
-            }
-        </Formik>
-    </div>
+
+    return (<form className={s.form + ' ' + s.loginHeight} onSubmit={formik.handleSubmit}>
+        <h1>Log in</h1>
+        <TextField fullWidth label={'Username'} variant={'outlined'} name={'username'} value={formik.values.username}
+                   onChange={formik.handleChange} helperText={formik.touched.username && formik.errors.username}
+                   error={formik.touched.username && !!formik.errors.username} onBlur={formik.handleBlur}/>
+        <TextField style={{marginTop: 35}} fullWidth label={'Password'} name={'password'} variant={'outlined'}
+                   value={formik.values.password} onChange={formik.handleChange} type={'password'}
+                   helperText={formik.touched.password && formik.errors.password}
+                   error={formik.touched.password && !!formik.errors.password} onBlur={formik.handleBlur}/>
+        <FormControlLabel
+            style={{marginTop: 20}}
+            control={<Checkbox name={'rememberMe'} onChange={formik.handleChange} color="primary"/>}
+            label="Remember me"/>
+        <Button color={'primary'} variant={'contained'} fullWidth type={'submit'}
+                disabled={!formik.isValid || formik.isSubmitting}>Log in</Button>
+    </form>)
+
 }
 
 

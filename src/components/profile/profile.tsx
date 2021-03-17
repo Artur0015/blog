@@ -1,19 +1,24 @@
 import {useDispatch, useSelector} from "react-redux";
-import {ArticleType, DispatchType} from "../../redux/common-types";
-import {ActionsType, getUserProfile, setMyUserAboutMe, setMyUserPhoto} from "../../redux/reducers/profile-reducer";
+import {DispatchType} from "../../redux/common-types";
+import {
+    ActionsType,
+    deleteArticle,
+    getUserArticles,
+    getUserProfileInfo,
+    setMyUserAboutMe,
+    setMyUserPhoto
+} from "../../redux/reducers/profile-reducer";
 import {useLocation, useParams} from "react-router-dom";
 import {getCurrentUserSelector, getProfileUserSelector} from "../../redux/selectors";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Preloader from "../preloader/preloader";
 import Error from "../error/error";
 import UserInfo from "./user-info";
 import s from './profile.module.css'
-import Post from "../menu/post";
-import Paginator from "../menu/paginator";
+import PageOfArticles from "../menu/page-of-articles";
 
 function Profile() {
-    const [isLoadingFirstPage, setLoadingFirstPage] = useState(true)
-    const [isLoadingNewPage, setLoadingNewPage] = useState(false)
+    const [isLoading, setLoading] = useState(true)
 
     const location = useLocation()
     const currentPage = parseInt(location.search.slice(6)) || 1
@@ -25,19 +30,14 @@ function Profile() {
     const dispatch = useDispatch<DispatchType<ActionsType>>()
 
     useEffect(() => {
-        setLoadingFirstPage(true)
-        dispatch(getUserProfile(username, currentPage)).then(() => {
-            setLoadingFirstPage(false)
+        setLoading(true)
+        dispatch(getUserProfileInfo(username)).then(() => {
+            setLoading(false)
         })
     }, [username])
 
     useEffect(() => {
-        if (currentPage !== 1 || !isLoadingFirstPage) {
-            setLoadingNewPage(true)
-            dispatch(getUserProfile(username, currentPage)).then(() => {
-                setLoadingNewPage(false)
-            })
-        }
+        dispatch(getUserArticles(username, currentPage))
     }, [currentPage, username])
 
 
@@ -51,7 +51,11 @@ function Profile() {
         }
     }
 
-    if (isLoadingFirstPage) {
+    function handleDeleteArticle(articleId: number) {
+        dispatch(deleteArticle(articleId))
+    }
+
+    if (isLoading) {
         return <Preloader/>
     }
 
@@ -59,18 +63,13 @@ function Profile() {
         return <Error/>
     }
 
-
-    return <div className={s.profile}>
-        <h1>{profileUser.username}</h1>
+    return <>
+        <h1 className={s.title}>{profileUser.username}</h1>
         <UserInfo changeAboutMe={changeUserAboutMe} user={profileUser} isOwner={isOwner} setPhoto={setPhoto}/>
-        <div className={s.articles}>
-            {isLoadingNewPage
-                ? <Preloader/>
-                : <>{profileUser.articles.articles.map((article: ArticleType) =>
-                    <Post key={article.id} article={article}/>)}
-                    <Paginator currentPage={currentPage} count={profileUser.articles.count} pageSize={3}/></>}
-        </div>
-    </div>
+        <PageOfArticles withDelete={isOwner} deleteArticle={handleDeleteArticle} withUsername={false}
+                        articles={profileUser.articles.data} articlesCount={profileUser.articles.count}
+                        currentPage={currentPage}/>
+    </>
 }
 
 

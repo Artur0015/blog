@@ -1,42 +1,26 @@
-.nav{
-    float:left;
-    position: relative;
-    min-height:100vh;
-    width:120px;
-    background-color: #4169e1;
-    z-index: 1;
-    transition: 0.5s;
+.navActive{
+    background-color: #F3F3F3;
+    min-height: 48px;
+    padding-left: 48px;
 }
 
-.nav button{
-    margin-left: 120px;
-    width: 20px;
-    height:20px;
-    border:none;
-    background-color: #4169e1;
-}
-.non_active{
-    margin-left: -120px;
-    transition: 0.5s;
+.x3 button{
+    min-width: 33%;
 }
 
-.nav a{
-    font-family: Aesthetic;
-    color:white;
-    font-size:20px;
-    display: block;
-    padding-left: 10px;
-    padding-top: 20px;
+.x4 button{
+    min-width: 25%;
+}
+
+.navUnActive{
+    display: none;
+}
+
+.navActive a{
     text-decoration: none;
+    color: black;
 }
 
-
-.nav a.active{
-    color:black;
+.buttonActive{
+    transform: rotate(90deg);
 }
-
-.nav img{
-    width: 120px;
-    height: 80px;
-}
-

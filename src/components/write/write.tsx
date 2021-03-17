@@ -1,61 +1,58 @@
-import {useDispatch, useSelector} from "react-redux"
+import {useDispatch} from "react-redux"
 import {useHistory} from "react-router";
-import {DispatchType} from "../../redux/common-types";
+import {ArticleBodyType, DispatchType} from "../../redux/common-types";
 import {ActionsType, addArticle} from "../../redux/reducers/article-reducer";
 import * as Yup from "yup";
-import {ErrorMessage, Field, Form, Formik} from "formik";
+import {FormikHelpers, useFormik} from "formik";
 import s from "./write.module.css";
 import React from "react";
-import {getCurrentUserSelector} from "../../redux/selectors";
-
+import {Button, TextField} from "@material-ui/core";
 
 const validationSchema = Yup.object({
-    header: Yup.string().required(),
-    text: Yup.string().required().min(5)
+    header: Yup.string().required().max(80).min(10),
+    text: Yup.string().required().min(300)
 })
-
-const initialValues = {
-    header: '',
-    text: ''
-}
 
 
 function Write() {
     const dispatch = useDispatch<DispatchType<ActionsType>>()
     const history = useHistory()
-    const user = useSelector(getCurrentUserSelector)
 
-
-    async function handleSubmit(values: typeof initialValues) {
-        if(user.isAuthenticated) {
-            const article = {
-                header: values.header,
-                text: values.text,
-                author: user.username
-            }
-            await dispatch(addArticle(article))
-            history.push('/menu')
+    async function handleSubmit(values: ArticleBodyType, {setSubmitting}: FormikHelpers<ArticleBodyType>) {
+        setSubmitting(true)
+        const article = {
+            header: values.header,
+            text: values.text
         }
+        const articleId = await dispatch(addArticle(article))
+        if (!(articleId === 'error')) history.push('/article/' + articleId)
     }
 
+    const formik = useFormik<ArticleBodyType>({
+        initialValues: {
+            header: '',
+            text: ''
+        },
+        validationSchema: validationSchema,
+        onSubmit: handleSubmit
+    })
 
     return (
-        <Formik validationSchema={validationSchema}
-                initialValues={initialValues}
-                onSubmit={handleSubmit}>
-            {formik => (
-                <Form className={s.form}>
-                    <h1>New Article</h1>
-                    <label htmlFor='header'>Article header</label>
-                    <Field name="header" />
-                    <ErrorMessage name='header'>{msg => <span>{msg}</span>}</ErrorMessage>
-                    <label>Article content</label>
-                    <Field name='text' as='textarea' />
-                    <ErrorMessage name='text'>{msg => <span>{msg}</span>}</ErrorMessage>
-                    <button>Save</button>
+        <>
+            <h1 className={s.h1}>New Article</h1>
+            <form className={s.form} onSubmit={formik.handleSubmit}>
+                <TextField name={'header'} label={'Header'} value={formik.values.header} onChange={formik.handleChange}
+                           helperText={formik.touched.header && formik.errors.header}
+                           error={formik.touched.header && !!formik.errors.header} onBlur={formik.handleBlur}/>
+                <TextField multiline fullWidth name={'text'} label={'Text'} value={formik.values.text}
+                           onChange={formik.handleChange}
+                           helperText={formik.touched.text && formik.errors.text}
+                           error={formik.touched.text && !!formik.errors.text} onBlur={formik.handleBlur}/>
+                <Button color={'primary'} variant={'outlined'} disabled={!formik.isValid || formik.isSubmitting}
+                        type={'submit'}>Save</Button>
 
-                </Form>)}
-        </Formik>)
+            </form>
+        </>)
 }
 
 export default Write

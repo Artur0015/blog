@@ -11,3 +11,5 @@ export const getArticlesOfCurrentPageSelector = (state: AppStateType) => state.m
 export const getArticlesCountSelector = (state: AppStateType) => state.menuReducer.count
 
 export const getProfileUserSelector = (state: AppStateType) => state.profileReducer
+
+export const getError = (state: AppStateType) => state.errorReducer

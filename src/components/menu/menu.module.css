@@ -1,65 +1,44 @@
-.pagination{
-    margin-left: 10px;
-    height:30px;
-    width: 200px;
-    margin-top: 30px;
+.pageOfArticles{
+    padding: 20px;
+}
+
+.pageOfArticles ul{
+    margin-top: 20px;
+}
+
+.pageOfArticles h2{
+    margin-top: 20px;
+    font-size: 40px;
     text-align: center;
-    display: inline-block;
-    
 }
 
-.pagination a{
-    color:black;
-    background-color: #e9ecef;
-    text-decoration: none;
-    border: 1px solid;
-    border-radius: 30%;
-    padding: 5px 9px;
-    display: inline;
-    margin-right: 2px;
-    color:black;
+.content a{
+    color: black;
 }
 
-.active{
-    color:blue;
-    border-color: blue;
-    background-color: red;
+.content{
+    padding: 3px;
 }
 
-.post{
-    height:auto;
-    background-color: #e9ecef;
-    /* margin-left: 120px; */
-    position: relative;
-    margin-bottom: 2px;
-    padding-bottom: 40px;
+.content svg{
+    float: left;
 }
 
-.post h1{
-    font-size: 35px;
-    color:blue;
-    text-align: center;
-    font-weight: 400;
+.rating{
+    height: 50px;
+    margin-top: 10px;
 }
 
-.post p{
-    font-family: Arial, Helvetica, sans-serif;
-    padding-left: 60px;
-    padding-right: 20px;
-    padding-top: 10px;
-    line-height: 1.5;
-    letter-spacing: 0.7px;
-    display: block;
+.rating p{
+    padding-top: 5px;
+    padding-left: 35px;
 }
 
-.post span{
-    bottom:30px;
-    right: 20px;
-    font-size: 20px;
-    position: absolute;
+.content h6{
+    float: right;
+    padding: 12px;
 }
 
-.post a{
-    text-decoration: none;
-    color: blue
+.infoPart{
+    border-top: 1px solid;
 }

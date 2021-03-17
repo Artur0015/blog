@@ -1,5 +1,10 @@
-import {UserType, UserCredentialsType, ProfileType} from '../redux/common-types';
+import {
+    CredentialsType,
+    ProfileUserType,
+    ArticlesWithCountType, BaseUserType
+} from '../redux/common-types';
 import axios, {AxiosResponse} from 'axios'
+import {LoginCredentialsType} from "../components/login/login";
 
 const DEFAULT_URL = 'http://localhost:8000/api/user/'
 
@@ -16,22 +21,26 @@ export async function getResponse<T>(makeRequest: () => Promise<AxiosResponse<T>
 }
 
 
-
 export const usersApi = {
     async getMyUserInfo() {
-            return getResponse<UserType>(async () => await axios.get(DEFAULT_URL + 'info/'))
+            return getResponse<BaseUserType>(async () => await axios.get(DEFAULT_URL + 'info/'))
     },
-    async loginUser(userCredentials: UserCredentialsType) {
-            return getResponse<UserType>(async () => await axios.post(DEFAULT_URL + 'login/', userCredentials))
+    async loginUser(userCredentials: LoginCredentialsType) {
+            return getResponse<BaseUserType>(async () => await axios.post(DEFAULT_URL + 'login/', userCredentials))
     },
     async logoutUser() {
             return getResponse(async () => await axios.delete(DEFAULT_URL + 'login/'))
     },
-    async signupUser(credentials: UserCredentialsType) {
+    async signupUser(credentials: CredentialsType) {
             return getResponse(async () => await axios.post(DEFAULT_URL + 'register/', credentials))
     },
-    async getUserInfoByUsername(username: string, page: number) {
-        return getResponse<ProfileType>(async () => await axios.get(`${DEFAULT_URL + username}/info/?page=${page}`))
+    async getUserInfoByUsername(username: string) {
+        return getResponse<ProfileUserType>(async () => await axios.get(`${DEFAULT_URL + username}/info/`))
+    },
+    async getUserArticlesByUsername(username: string, page: number) {
+        return getResponse<ArticlesWithCountType>(async () => (
+            await axios.get(`${DEFAULT_URL + username}/articles/?page=${page}`))
+        )
     },
     async setPhoto(photo: File) {
         const formData = new FormData()
@@ -43,6 +52,6 @@ export const usersApi = {
         }))
     },
     async setAboutMe(username: string, aboutMe: string) {
-        return getResponse<ProfileType>(async () => await axios.put(`${DEFAULT_URL + username}/info/`, {aboutMe}))
+        return getResponse(async () => await axios.patch(DEFAULT_URL +'info/', {aboutMe}))
     },
 }
