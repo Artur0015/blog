@@ -19,8 +19,8 @@ import {Alert} from "@material-ui/lab";
 import {AppStateType} from "./redux/redux-store";
 import Error from './components/error/error'
 
-function App() {
 
+function App() {
     const [isLoading, setLoading] = useState(true)
 
 
@@ -50,12 +50,10 @@ function App() {
             <Route exact path='/'><Menu/></Route>
             <Route path='/article/:articleId'><ArticlePage/></Route>
             <Route path='/profile/:username'><Profile/></Route>
-            {user.isAuthenticated
-                ? <Route exact path='/write'><Write/></Route>
-                : <><Route exact path='/login'><Login/></Route>
-                    <Route exact path='/signup'><Signup/></Route></>
-            }
-            <Error />
+            {user.isAuthenticated && <Route exact path='/write'><Write/></Route>}
+            {!user.isAuthenticated && <Route exact path='/login'><Login/></Route>}
+            {!user.isAuthenticated && <Route exact path='/signup'><Signup/></Route>}
+            <Route><Error/></Route>
         </Switch>
     </>)
 }

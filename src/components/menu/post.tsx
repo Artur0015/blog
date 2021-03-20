@@ -26,7 +26,7 @@ const Post = ({article, withUsername, ...props}: PropsType) => {
     }
 
     return <>
-        <Grid item xs={12} md={6} lg={4} xl={2}>
+        <Grid item xs={12} md={6} xl={3}>
             <Card className={s.content}>
                 <CardActionArea><CardContent style={{paddingBottom: 0}}>
 

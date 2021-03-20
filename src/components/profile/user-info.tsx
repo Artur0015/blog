@@ -4,6 +4,8 @@ import s from './profile.module.css'
 import {FullProfileType} from "../../redux/common-types";
 import {Button} from "@material-ui/core";
 
+const anonymPhoto = 'https://support.jfrog.com/profilephoto/729w00000001MIn/M'
+
 
 type PropsType = {
     changeAboutMe: (text: string) => void
@@ -46,14 +48,14 @@ function UserInfo({changeAboutMe, user, isOwner, setPhoto}: PropsType) {
 
     return <div className={s.small + ' ' + s.big}>
         <div className={s.image_space}>
-            <img src={user.photo} className={s.photo}/>
+            <img src={user.photo ? user.photo : anonymPhoto} className={s.photo}/>
             <input type="file" style={{display: 'none'}} ref={imageInputRef} onChange={setPhoto}/>
             {isOwner && <Button variant={'outlined'} onClick={clickFileInput}>Upload</Button>}
         </div>
         <textarea disabled={!isEditMode}
-                          placeholder={!isEditMode ? user.aboutMe || 'User didn\'t tell anything about himself' : ''}
-                          value={text}
-                          onChange={handleTextChange}/>
+                  placeholder={!isEditMode ? user.aboutMe || 'User didn\'t tell anything about himself' : ''}
+                  value={text}
+                  onChange={handleTextChange}/>
         {isOwner &&
         (isEditMode
             ? <>

@@ -4,9 +4,9 @@ const again = ' and try again'
 
 const errors = {
     articlePullFail: er + 'Failed to load article-page. ' + pl,
-    articleLoadFail: er + 'Failed to create article-page. ' + pl + again,
-    articleChangeFail: er + 'Failed to change article-page. ' + pl + again,
-    articleDeleteFail: er + 'Failed to delete article-page. ' + pl + again,
+    articleLoadFail: er + 'Failed to create article. ' + pl + again,
+    articleChangeFail: er + 'Failed to change article. ' + pl + again,
+    articleDeleteFail: er + 'Failed to delete article. ' + pl + again,
     commentLoadFail: er + 'Failed to create comment. ' + pl + again,
     commentsPullFail: er + 'Failed to load comments. ' + pl,
     commentDeleteFail: er + 'Failed to delete comment. ' + pl + again,
