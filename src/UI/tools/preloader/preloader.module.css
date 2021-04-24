@@ -1,0 +1,34 @@
+.preloader div {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: black;
+  margin-right: 3px;
+  animation: 0.5s infinite alternate-reverse;
+  animation-name: pulse;
+}
+.preloader div:nth-child(2) {
+  animation-delay: 0.25s;
+}
+.preloader div:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+@keyframes pulse {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+}
+.wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/*# sourceMappingURL=preloader.module.css.map */

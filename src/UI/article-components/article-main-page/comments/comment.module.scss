@@ -1,0 +1,112 @@
+.CommentInput {
+  margin: 2rem 0;
+
+  label {
+    font-size: 1.3rem;
+  }
+
+  textarea {
+    margin-top: 0.5rem;
+  }
+
+  button {
+    border-radius: 8px;
+    margin-top: 0.25rem;
+    margin-right: 0.75rem;
+  }
+}
+
+.comments {
+  h3 {
+    font-size: 1.75rem;
+    font-weight: bolder;
+    margin-bottom: 1.5rem;
+  }
+
+  .comment {
+    position: relative;
+    margin-top: 1rem;
+    display: flex;
+
+    .photo {
+      margin-right: 0.5rem;
+
+      img {
+        width: 3rem;
+        height: 2.5rem;
+      }
+    }
+
+    .content {
+      margin-bottom: 0.3rem;
+      padding-right: 1rem;
+      width: 100%;
+
+      .top {
+        margin-bottom: 0.3rem;
+        display: flex;
+        align-items: center;
+
+        a {
+          font-size: 1.2rem;
+          margin-right: 0.5rem;
+        }
+
+        small {
+          color: grey;
+          font-size: 0.8rem;
+        }
+      }
+
+      .text{
+        button{
+          margin-top: 0.25rem;
+          margin-right: 0.75rem;
+          border-radius: 8px;
+        }
+
+        .edit{
+          display: none;
+        }
+      }
+    }
+
+    .icon {
+      position: absolute;
+      right: 0;
+      top: 0.5rem;
+      background-color: inherit;
+      outline: none;
+      border: none;
+    }
+
+    .menu {
+      position: absolute;
+      right: 1rem;
+      z-index: 1;
+      top: 1.3rem;
+      background-color: white;
+      box-shadow: 1px 1px 2px 2px grey;
+      border-radius: 3px;
+
+      li {
+        border-top: 1px solid;
+        padding: 0.5rem 1rem;
+
+        &:first-child {
+          border: none;
+        }
+
+        &:hover {
+          background-color: #E9E9E9;
+          cursor: pointer;
+        }
+
+        span {
+          vertical-align: middle;
+          margin-right: 0.3rem;
+        }
+      }
+    }
+  }
+}

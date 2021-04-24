@@ -1,0 +1,49 @@
+.user {
+  font-weight: bolder;
+  margin: 1rem;
+  @media screen and (max-width: 30rem) {
+    font-size: 3.6vw;
+  }
+
+  img {
+    width: 7em;
+    height: 6em;
+    float: left;
+    display: block;
+    margin-right: 2em;
+  }
+
+  .info {
+    height: 6em;
+    display: flex;
+    align-items: center;
+
+    .block {
+      margin-right: 2em;
+      text-align: center;
+      position: relative;
+      line-height: 1.75em;
+
+      strong {
+        font-size: 1.5em;
+        margin: 0 auto;
+      }
+
+      small {
+        align-self: flex-end;
+      }
+    }
+  }
+
+  h2 {
+    margin-top: 2rem;
+    font-size: 1.5em;
+  }
+}
+
+.aboutMe {
+  p, textarea {
+    font-size: 1rem;
+    margin: 0.75rem 0.5rem;
+  }
+}

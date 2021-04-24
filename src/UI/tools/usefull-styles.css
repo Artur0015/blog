@@ -1,0 +1,65 @@
+.blue-btn {
+  background-color: #3946f7;
+  padding: 0.5rem 1.3rem;
+  transition: 0.3s;
+  border: none;
+  outline: none;
+  color: white;
+}
+.blue-btn:hover {
+  background-color: #0a1af3;
+}
+.blue-btn:disabled {
+  background-color: gray;
+  cursor: auto;
+}
+
+.transparent-blue-btn {
+  background-color: inherit;
+  padding: 0.5rem 1.3rem;
+  border: none;
+  outline: none;
+  color: #3946f7;
+  text-transform: uppercase;
+}
+.transparent-blue-btn:hover {
+  background-color: #F0F0F0;
+}
+.transparent-blue-btn:disabled {
+  color: grey;
+  background-color: inherit;
+}
+
+.transparent-red-btn {
+  background-color: inherit;
+  padding: 0.5rem 1.3rem;
+  border: none;
+  outline: none;
+  color: red;
+  text-transform: uppercase;
+}
+.transparent-red-btn:hover {
+  background-color: #F0F0F0;
+}
+.transparent-red-btn:disabled {
+  color: grey;
+  background-color: inherit;
+}
+
+.red-btn {
+  background-color: red;
+  padding: 0.5rem 1.3rem;
+  transition: 0.3s;
+  border: none;
+  outline: none;
+  color: white;
+}
+.red-btn:hover {
+  background-color: #cc0000;
+}
+.red-btn:disabled {
+  background-color: gray;
+  cursor: auto;
+}
+
+/*# sourceMappingURL=usefull-styles.css.map */

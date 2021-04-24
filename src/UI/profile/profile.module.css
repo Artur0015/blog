@@ -1,0 +1,45 @@
+.user {
+  font-weight: bolder;
+  margin: 1rem;
+}
+@media screen and (max-width: 30rem) {
+  .user {
+    font-size: 3.6vw;
+  }
+}
+.user img {
+  width: 7em;
+  height: 6em;
+  float: left;
+  display: block;
+  margin-right: 2em;
+}
+.user .info {
+  height: 6em;
+  display: flex;
+  align-items: center;
+}
+.user .info .block {
+  margin-right: 2em;
+  text-align: center;
+  position: relative;
+  line-height: 1.75em;
+}
+.user .info .block strong {
+  font-size: 1.5em;
+  margin: 0 auto;
+}
+.user .info .block small {
+  align-self: flex-end;
+}
+.user h2 {
+  margin-top: 2rem;
+  font-size: 1.5em;
+}
+
+.aboutMe p, .aboutMe textarea {
+  font-size: 1rem;
+  margin: 0.75rem 0.5rem;
+}
+
+/*# sourceMappingURL=profile.module.css.map */

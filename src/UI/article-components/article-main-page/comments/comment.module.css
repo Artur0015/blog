@@ -1,0 +1,92 @@
+.CommentInput {
+  margin: 2rem 0;
+}
+.CommentInput label {
+  font-size: 1.3rem;
+}
+.CommentInput textarea {
+  margin-top: 0.5rem;
+}
+.CommentInput button {
+  border-radius: 8px;
+  margin-top: 0.25rem;
+  margin-right: 0.75rem;
+}
+
+.comments h3 {
+  font-size: 1.75rem;
+  font-weight: bolder;
+  margin-bottom: 1.5rem;
+}
+.comments .comment {
+  position: relative;
+  margin-top: 1rem;
+  display: flex;
+}
+.comments .comment .photo {
+  margin-right: 0.5rem;
+}
+.comments .comment .photo img {
+  width: 3rem;
+  height: 2.5rem;
+}
+.comments .comment .content {
+  margin-bottom: 0.3rem;
+  padding-right: 1rem;
+  width: 100%;
+}
+.comments .comment .content .top {
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: center;
+}
+.comments .comment .content .top a {
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+}
+.comments .comment .content .top small {
+  color: grey;
+  font-size: 0.8rem;
+}
+.comments .comment .content .text button {
+  margin-top: 0.25rem;
+  margin-right: 0.75rem;
+  border-radius: 8px;
+}
+.comments .comment .content .text .edit {
+  display: none;
+}
+.comments .comment .icon {
+  position: absolute;
+  right: 0;
+  top: 0.5rem;
+  background-color: inherit;
+  outline: none;
+  border: none;
+}
+.comments .comment .menu {
+  position: absolute;
+  right: 1rem;
+  z-index: 1;
+  top: 1.3rem;
+  background-color: white;
+  box-shadow: 1px 1px 2px 2px grey;
+  border-radius: 3px;
+}
+.comments .comment .menu li {
+  border-top: 1px solid;
+  padding: 0.5rem 1rem;
+}
+.comments .comment .menu li:first-child {
+  border: none;
+}
+.comments .comment .menu li:hover {
+  background-color: #E9E9E9;
+  cursor: pointer;
+}
+.comments .comment .menu li span {
+  vertical-align: middle;
+  margin-right: 0.3rem;
+}
+
+/*# sourceMappingURL=comment.module.css.map */

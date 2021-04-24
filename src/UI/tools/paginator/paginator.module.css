@@ -1,0 +1,13 @@
+.paginator {
+  margin-left: 1.5rem;
+}
+.paginator a {
+  margin-right: 0.3rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 5px;
+}
+.paginator a.active, .paginator a:hover {
+  background-color: #E6E6E6;
+}
+
+/*# sourceMappingURL=paginator.module.css.map */

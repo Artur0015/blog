@@ -1,0 +1,74 @@
+@import "../../tools/usefull-styles";
+
+$postWidth: 30rem;
+
+.articles {
+  display: flex;
+  flex-wrap: wrap;
+
+  .post {
+    position: relative;
+    margin: 1rem;
+    @media screen and (max-width: 40rem) {
+      margin: 0.5rem
+    }
+
+    border-radius: 8px;
+    flex: 1 1 $postWidth;
+    border: 1px solid;
+    padding: 0.5rem 0.5rem 1.7rem 0.5rem;
+
+    &:hover {
+      background-color: #EEEEEE;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+
+    .top {
+      a {
+        margin-left: 0.5rem;
+        font-weight: bolder;
+        color: #3946f7;
+      }
+
+      img {
+        vertical-align: middle;
+        width: 3rem;
+        height: 2.5rem;
+      }
+    }
+
+    .container {
+      @include photoContainerWithSpecificRatio(0.5rem 0, 43.75%, 100%, 100%)
+    }
+
+    small {
+      right: 0.75rem;
+      position: absolute;
+      bottom: 0.5rem;
+    }
+
+    h4 {
+      font-weight: bolder;
+      font-size: 1.25rem;
+      margin: 0.6rem 0;
+    }
+
+    .likes {
+      display: flex;
+      align-items: center;
+
+      span {
+        margin-right: 0.75rem;
+      }
+
+      svg {
+        margin: 0 0.5rem;
+      }
+    }
+  }
+}
+
+.paginator {
+  padding: 1rem;
+}

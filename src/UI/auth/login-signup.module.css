@@ -1,0 +1,51 @@
+.formContainer {
+  margin: 0 auto;
+  padding-top: 2.5rem;
+  max-width: 25rem;
+}
+.formContainer .wrapper {
+  background-color: #F0F0F0;
+  padding: 1.5rem;
+  font-weight: bolder;
+}
+.formContainer .wrapper h1 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+.formContainer .wrapper form .field {
+  margin-bottom: 2rem;
+}
+.formContainer .wrapper form .field p, .formContainer .wrapper form .field label, .formContainer .wrapper form .field span {
+  margin-left: 0.1875rem;
+}
+.formContainer .wrapper form .field label {
+  display: block;
+  margin-bottom: 0.1875rem;
+}
+.formContainer .wrapper form .field span {
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+  color: red;
+  position: absolute;
+  display: block;
+}
+.formContainer .wrapper form .field input {
+  width: calc(100% - 0.9rem);
+  height: 1.3rem;
+  padding: 0.3125rem;
+  letter-spacing: 0.4px;
+}
+.formContainer .wrapper form button {
+  width: 100%;
+  height: 2rem;
+}
+.formContainer .wrapper p {
+  font-size: 1.1rem;
+  margin-top: 0.75rem;
+}
+.formContainer .wrapper a {
+  color: blue;
+}
+
+/*# sourceMappingURL=login-signup.module.css.map */

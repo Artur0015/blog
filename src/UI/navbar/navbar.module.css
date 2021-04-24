@@ -1,0 +1,38 @@
+.navbar {
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+}
+.navbar button {
+  flex: 1 1 auto;
+  height: 100%;
+  border: none;
+  outline: none;
+  background-color: inherit;
+  transition: 0.3s;
+}
+.navbar button:first-child {
+  flex: 0 0 3rem;
+}
+.navbar button svg {
+  height: 1.3rem;
+  width: 1.3rem;
+}
+.navbar button:hover {
+  background-color: #E9E9E9;
+}
+
+.navbarOpen {
+  background-color: #F3F3F3;
+}
+
+.menuButton {
+  cursor: pointer;
+  transition: 0.5s;
+}
+
+.rotate {
+  transform: rotate(90deg);
+}
+
+/*# sourceMappingURL=navbar.module.css.map */

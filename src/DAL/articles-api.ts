@@ -1,63 +1,69 @@
 import axios from 'axios';
 import {
     ArticleBodyType,
-    CommonArticleType,
-    ArticlePageType,
-    CommentType
-} from '../redux/common-types';
-import {getResponse} from "./users-api";
+    FullArticleType,
+    CommentType, ArticlesWithCountType, ArticleRequestParamsType, CreateSuccessResponseType
+} from '../common-types';
+import {BACKEND_API_URL} from "./configs-and-tools";
 
 
-const DEFAULT_URL = 'http://localhost:8000/api/articles/'
+const URL = BACKEND_API_URL + 'articles/'
 
-axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
-axios.defaults.xsrfCookieName = "csrftoken";
-axios.defaults.withCredentials = true;
-
-
-export type MenuType = {
-    count: number
-    articles: Array<CommonArticleType>
-}
 
 export const articlesAPI = {
-    async getArticlesOfPage(page: number) {
-        return getResponse<MenuType>(async () => await axios.get(`${DEFAULT_URL}?page=${page}`))
+    async getArticlesOfPage({currentPage, pageSize}: ArticleRequestParamsType) {
+        return await axios.get<ArticlesWithCountType>(
+            `${URL}?page=${currentPage}${pageSize ? `&page_size=${pageSize}` : ''}`)
 
     },
     async getArticle(id: number) {
-        return getResponse<ArticlePageType>(async () => await axios.get(DEFAULT_URL + id + '/'))
+        return await axios.get<FullArticleType>(`${URL}${id}/`)
     },
     async getArticleComments(articleId: number) {
-        return getResponse<Array<CommentType>>(async () => await axios.get(DEFAULT_URL + articleId + '/comments/'))
+        return await axios.get<Array<CommentType>>(`${URL}${articleId}/comments/`)
     },
-    async changeArticle(articleId: number, article: ArticleBodyType) {
-        return getResponse(async () => await axios.patch(DEFAULT_URL + articleId + '/', article))
+    async changeArticle(id: number, article: ArticleBodyType) {
+        return await axios.patch<void>(`${URL}${id}/`, article)
     },
     async addArticle(article: ArticleBodyType) {
-        return getResponse<number>(async () => await axios.post(DEFAULT_URL, article))
+        let data: ArticleBodyType | FormData = article
+        let headers: undefined | { 'Content-Type': string }
+        if (article.photo) {
+            data = new FormData()
+            headers = {'Content-Type': 'multipart/form-data'}
+            let i: keyof typeof article
+            for (i in article) {
+                const value = article[i]
+                if (value) {
+                    data.append(i, value)
+                }
+            }
+        }
+        return await axios.post<CreateSuccessResponseType>(URL, data, {headers})
     },
-    async addComment(articleId: number, commentText: string) {
-        return getResponse<CommentType>(async () => await axios.post(DEFAULT_URL + articleId + '/comments/',
-            {text: commentText}))
+    async addComment(articleId: number, text: string) {
+        return await axios.post<CreateSuccessResponseType>(`${URL}${articleId}/comments/`, {text})
     },
-    async deleteComment(commentId: number) {
-        return getResponse(async () => await axios.delete('http://localhost:8000/api/comments/' + commentId))
+    async deleteComment(id: number) {
+        return await axios.delete<void>(`${BACKEND_API_URL}comments/${id}/`)
     },
-    async deleteArticle(articleId: number) {
-        return getResponse(async () => await axios.delete(DEFAULT_URL + articleId))
+    async changeComment(id: number, text: string) {
+        return await axios.put<void>(`${BACKEND_API_URL}comments/${id}/`, {text})
+    },
+    async deleteArticle(id: number) {
+        return await axios.delete<void>(`${URL}${id}/`)
     },
     async putLike(articleId: number) {
-        return getResponse(async () => await axios.post(DEFAULT_URL + articleId + '/likes/'))
+        return await axios.post<void>(`${URL}${articleId}/likes/`)
     },
     async deleteLike(articleId: number) {
-        return getResponse(async () => await axios.delete(DEFAULT_URL + articleId + '/likes/'))
+        return await axios.delete<void>(`${URL}${articleId}/likes/`)
     },
     async deleteDislike(articleId: number) {
-        return getResponse(async () => await axios.delete(DEFAULT_URL + articleId + '/dislikes/'))
+        return await axios.delete<void>(`${URL}${articleId}/dislikes/`)
     },
     async putDislike(articleId: number) {
-        return getResponse(async () => await axios.post(DEFAULT_URL + articleId + '/dislikes/'))
+        return await axios.post<void>(`${URL}${articleId}/dislikes/`)
     },
 }
 

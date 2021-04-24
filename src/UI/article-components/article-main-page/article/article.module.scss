@@ -1,0 +1,94 @@
+@import "../../../tools/usefull-styles";
+
+.main {
+  padding: 1rem 0.2rem;
+  @media screen and (min-width: 45rem) {
+    padding: 1rem;
+  }
+
+  .article {
+    position: relative;
+    background-color: white;
+    padding: 0.75rem 0.75rem 1rem 0.75rem;
+    border: 2px solid grey;
+    border-radius: 9px;
+
+    .user {
+      margin-bottom: 0.5rem;
+      display: inline-block;
+
+      a {
+        margin-right: 0.75rem;
+        font-weight: bolder;
+        color: #3946f7;
+        font-size: 1.1rem;
+      }
+
+      img {
+        vertical-align: middle;
+        width: 3rem;
+        height: 2.5rem;
+      }
+    }
+
+    small {
+      display: inline-block;
+      color: gray;
+      font-size: 0.8rem;
+    }
+
+    .container {
+      @include photoContainerWithSpecificRatio(1rem 0, 43.75%, auto, 100%)
+    }
+
+
+    h1 {
+      font-size: 2rem;
+      text-align: center;
+      font-weight: bolder;
+      margin-bottom: 1rem;
+    }
+
+    .text {
+      white-space: pre-wrap;
+
+      p {
+        letter-spacing: 0.04rem;
+        margin-bottom: 1rem;
+      }
+    }
+
+    .likeSpace {
+      display: flex;
+      align-items: center;
+      margin: 0.5rem 1.5rem;
+
+
+      b {
+        margin-right: 1rem;
+      }
+    }
+
+    .transparent {
+      border: none;
+      outline: none;
+      background-color: inherit;
+    }
+
+    .delete{
+      position: absolute;
+      right: 0.4rem;
+      bottom: 0.4rem;
+      padding: 0.5rem;
+      border-radius: 50%;
+
+      svg{
+        width: 1.1rem;
+        height: 1.1rem;
+      }
+      &:hover{
+        background-color: #EEEEEE;
+      }
+    }
+  }
+}

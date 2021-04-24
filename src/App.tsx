@@ -1,33 +1,25 @@
-import './App.css';
 import {Route, Switch} from 'react-router-dom';
 import './index.css'
-import Write from './components/write/write';
-import Menu from './components/menu/menu';
-import ArticlePage from './components/article/article-page';
-import Navbar from './components/navbar/navbar';
-import Login from './components/login/login';
-import Signup from './components/signup/signup';
+import './App.css'
+import WriteNewArticle from './UI/article-components/write-new-article/WriteNewArticle';
+import ArticlesMenu from './UI/article-components/articles-menu/ArticlesMenu';
+import ArticleMainPage from './UI/article-components/article-main-page/ArticleMainPage';
+import Navbar from './UI/navbar/Navbar';
+import Login from './UI/auth/Login';
+import Signup from './UI/auth/Signup';
 import React, {useEffect, useState} from "react";
-import Profile from "./components/profile/profile";
-import {useDispatch, useSelector} from "react-redux";
-import {DispatchType, UserType} from "./redux/common-types";
-import {ActionsType, getUserInfo} from "./redux/reducers/auth-reducer";
-import {getCurrentUserSelector, getError} from "./redux/selectors";
-import Preloader from "./components/preloader/preloader";
-import {errorActions, ErrorActionsType} from "./redux/reducers/error-reducer";
-import {Alert} from "@material-ui/lab";
-import {AppStateType} from "./redux/redux-store";
-import Error from './components/error/error'
+import Profile from "./UI/profile/Profile";
+import Preloader from "./UI/tools/preloader/Preloader";
+import {useAppDispatch} from "./BLL/store";
+import Error from './UI/tools/error/Error'
+import {getUserInfo} from "./BLL/slices/auth-slice";
+import './UI/tools/usefull-styles.scss'
 
 
 function App() {
     const [isLoading, setLoading] = useState(true)
 
-
-    const dispatch = useDispatch<DispatchType<ActionsType | ErrorActionsType>>()
-    const user = useSelector<AppStateType, UserType>(getCurrentUserSelector)
-    const error = useSelector<AppStateType, string>(getError)
-
+    const dispatch = useAppDispatch()
 
     useEffect(() => {
         setLoading(true)
@@ -38,21 +30,15 @@ function App() {
         return <Preloader/>
     }
 
-    if (error) {
-        setTimeout(() => dispatch(errorActions.deleteError()), 8000)
-    }
-
     return (<>
-        {!!error
-            ? <Alert variant="filled" severity="error" className={'errorAlert'}>{error}</Alert>
-            : <Navbar/>}
+        <Navbar/>
         <Switch>
-            <Route exact path='/'><Menu/></Route>
-            <Route path='/article/:articleId'><ArticlePage/></Route>
+            <Route exact path='/'><ArticlesMenu/></Route>
+            <Route path='/article/:articleId'><ArticleMainPage/></Route>
             <Route path='/profile/:username'><Profile/></Route>
-            {user.isAuthenticated && <Route exact path='/write'><Write/></Route>}
-            {!user.isAuthenticated && <Route exact path='/login'><Login/></Route>}
-            {!user.isAuthenticated && <Route exact path='/signup'><Signup/></Route>}
+            <Route exact path='/write'><WriteNewArticle/></Route>
+            <Route exact path='/login'><Login/></Route>
+            <Route exact path='/signup'><Signup/></Route>
             <Route><Error/></Route>
         </Switch>
     </>)
