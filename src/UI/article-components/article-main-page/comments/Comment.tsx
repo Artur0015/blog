@@ -54,7 +54,7 @@ function Comment({comment, isOwner, deleteComment, changeComment}: PropsType) {
         {isOwner && <button onClick={toggleMenu} className={s.icon}><BsThreeDotsVertical/></button>}
         {isMenuOpened && <ul className={s.menu}>
             <li onClick={handleDelete}><span><IoMdTrash/></span>Delete</li>
-            <li onClick={startEditing}><span><HiPencil/></span>Change</li>
+            <li onClick={startEditing}><span><HiPencil/></span>Edit</li>
         </ul>}
 
     </div>

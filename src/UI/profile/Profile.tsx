@@ -29,7 +29,7 @@ function Profile() {
     useEffect(() => {
         setLoadingUser(true)
         dispatch(getUserByUsername(username)).then(() => setLoadingUser(false))
-    }, [username])
+    }, [dispatch, username])
 
     useEffect(() => {
         setLoadingArticles(true)
@@ -37,7 +37,7 @@ function Profile() {
             username,
             requestParams: {currentPage, pageSize}
         })).then(() => setLoadingArticles(false))
-    }, [currentPage, username])
+    }, [dispatch, currentPage, username])
 
 
     function changeUserAboutMe(aboutMe: string) {
@@ -45,7 +45,7 @@ function Profile() {
     }
 
     function setPhoto(photo: File) {
-            dispatch(changeUser({photo}))
+        dispatch(changeUser({photo}))
     }
 
     if (isLoadingUser || areLoadingArticles) {

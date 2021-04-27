@@ -38,7 +38,7 @@ function ArticleMainPage() {
     useEffect(() => {
         dispatch(getArticle(id)).then(() => setLoadingArticle(false))
         dispatch(getArticleComments(id)).then(() => setLoadingComments(false))
-    }, [id])
+    }, [dispatch, id])
 
     async function handleArticleDelete() {
         await dispatch(deleteArticle(article.id))
@@ -53,7 +53,7 @@ function ArticleMainPage() {
         dispatch(deleteComment(id))
     }
 
-    function handleCommentChange(id: number,text: string) {
+    function handleCommentChange(id: number, text: string) {
         dispatch(changeComment({id, text}))
     }
 
@@ -79,12 +79,12 @@ function ArticleMainPage() {
         return <Preloader/>
     }
 
-    if(!article.id) return <Error />
+    if (!article.id) return <Error/>
 
     return <div className={articleStyles.main}>
         <Article article={article} changeArticle={saveArticleChanges} user={user} toggleLike={toggleLike}
                  toggleDislike={toggleDislike} deleteArticle={handleArticleDelete}/>
-        <CommentInput addComment={handleCommentAdd}/>
+        {user.isAuthenticated && <CommentInput addComment={handleCommentAdd}/>}
         {areLoadingComments
             ? <div style={{textAlign: 'center'}}><Preloader notInCenter/></div>
             : <div className={commentStyles.comments}>

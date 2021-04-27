@@ -1,7 +1,13 @@
 import axios from 'axios';
 
-axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
-axios.defaults.xsrfCookieName = "csrftoken";
-axios.defaults.withCredentials = true;
+export const baseURL = process.env.REACT_APP_BACKEND_URL + 'api/'
 
-export const BACKEND_API_URL = process.env.REACT_APP_BACKEND_URL + 'api/'
+export const instanceWithToken = axios.create({baseURL})
+
+instanceWithToken.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token')
+    if (token) config.headers.Authorization = 'Bearer ' + token
+    return config
+})
+
+export const instanceWithoutToken = axios.create({baseURL})

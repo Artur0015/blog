@@ -25,7 +25,7 @@ function ArticlesMenu() {
     useEffect(() => {
         setLoading(true)
         dispatch(getArticlesOfPage({currentPage, pageSize})).then(() => setLoading(false))
-    }, [currentPage])
+    }, [currentPage, dispatch])
 
     if (isLoading) {
         return <Preloader/>

@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {CredentialsType, LoginCredentialsType, BaseUserType, UserType} from "../../common-types";
+import {CredentialsType, BaseUserType, UserType} from "../../common-types";
 import {usersApi} from "../../DAL/users-api";
 
 
@@ -16,12 +16,13 @@ export const getUserInfo = createAsyncThunk<void, void>(
     }
 )
 
-export const loginUser = createAsyncThunk<void, LoginCredentialsType>(
+export const loginUser = createAsyncThunk<void, CredentialsType>(
     'auth/loginUser',
     async (credentials, {rejectWithValue, dispatch}) => {
         try {
             const data = (await usersApi.loginUser(credentials)).data
-            dispatch(authSlice.actions.setUser(data))
+            localStorage.setItem('token', data.token)
+            dispatch(authSlice.actions.setUser(data.user))
         } catch (e) {
             return rejectWithValue(e.response.data)
         }
@@ -41,13 +42,9 @@ export const signupUser = createAsyncThunk<void, CredentialsType>(
 
 export const logoutUser = createAsyncThunk(
     'auth/logoutUser',
-    async (_, {rejectWithValue, dispatch}) => {
-        try {
-            await usersApi.logoutUser()
-            dispatch(authSlice.actions.logoutUser())
-        } catch (e) {
-            return rejectWithValue(e.response.data)
-        }
+    async (_, {dispatch}) => {
+        localStorage.removeItem('token')
+        dispatch(authSlice.actions.deleteUser())
     }
 )
 
@@ -58,7 +55,7 @@ const authSlice = createSlice({
             setUser: (state, {payload}: { payload: BaseUserType }) => {
                 return {isAuthenticated: true, ...payload}
             },
-            logoutUser: (state) => {
+            deleteUser: (state) => {
                 return {isAuthenticated: false}
             }
         }

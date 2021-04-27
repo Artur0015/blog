@@ -1,5 +1,4 @@
 import {useHistory, Redirect, Link} from "react-router-dom";
-import {LoginCredentialsType} from "../../common-types";
 import React from "react";
 import {FormikHelpers, Formik, Form, Field, ErrorMessage} from "formik";
 import s from "./login-signup.module.scss";
@@ -9,6 +8,7 @@ import {loginUser} from "../../BLL/slices/auth-slice";
 import {unwrapResult} from "@reduxjs/toolkit";
 import {useSelector} from "react-redux";
 import {getCurrentUserSelector} from "../../BLL/selectors";
+import {CredentialsType} from "../../common-types";
 
 
 const validationSchema = Yup.object({
@@ -16,10 +16,9 @@ const validationSchema = Yup.object({
     password: Yup.string().required('Password is required')
 })
 
-const initialValues: LoginCredentialsType = {
+const initialValues: CredentialsType = {
     username: '',
     password: '',
-    rememberMe: false
 }
 
 function Login() {
@@ -28,10 +27,10 @@ function Login() {
     const dispatch = useAppDispatch()
     const user = useSelector(getCurrentUserSelector)
 
-    async function handleSubmit(credentials: LoginCredentialsType, {
+    async function handleSubmit(credentials: CredentialsType, {
         setErrors,
         setSubmitting
-    }: FormikHelpers<LoginCredentialsType>) {
+    }: FormikHelpers<CredentialsType>) {
         setSubmitting(true)
         try {
             await dispatch(loginUser(credentials)).then(unwrapResult)

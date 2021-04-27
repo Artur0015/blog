@@ -24,7 +24,7 @@ function App() {
     useEffect(() => {
         setLoading(true)
         dispatch(getUserInfo()).then(() => setLoading(false))
-    }, [])
+    }, [dispatch])
 
     if (isLoading) {
         return <Preloader/>

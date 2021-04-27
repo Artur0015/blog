@@ -17,7 +17,8 @@ const initialValues = {
 }
 
 const validationSchema = Yup.object({
-    username: Yup.string().required('Username is required').min(5).max(12),
+    username: Yup.string().required('Username is required').min(6).max(12)
+        .matches(/^[a-zA-Z0-9_]*$/, {message: 'Unacceptable symbols are used'}),
     password: Yup.string().required('Password is required').min(8).max(16),
     passwordConfirmation: Yup.string().required('You must confirm password')
         .oneOf([Yup.ref('password')], 'Passwords must match')

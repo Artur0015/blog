@@ -44,10 +44,6 @@ export type CredentialsType = {
     password: string
 }
 
-export type LoginCredentialsType = CredentialsType & {
-    rememberMe: boolean
-}
-
 export type BaseUserType = {
     id: number
     username: string
