@@ -13,7 +13,7 @@ export const articlesAPI = {
 
     },
     async getArticle(id: number) {
-        return await instanceWithoutToken.get<FullArticleType>(`articles/${id}/`)
+        return await instanceWithToken.get<FullArticleType>(`articles/${id}/`)
     },
     async getArticleComments(articleId: number) {
         return await instanceWithoutToken.get<Array<CommentType>>(`articles/${articleId}/comments/`)
