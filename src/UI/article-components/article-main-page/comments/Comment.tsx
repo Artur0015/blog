@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {CommentType} from "../../../../common-types";
 import s from './comment.module.scss'
 import UserPhoto from "../../../tools/UserPhoto";
@@ -20,6 +20,14 @@ function Comment({comment, isOwner, deleteComment, changeComment}: PropsType) {
 
     const pubDateInCorrectForm = configureDate(comment.pubDate)
 
+    useEffect(() => {
+        if (isMenuOpened) {
+            const closeMenu = () => setMenuOpened(false)
+            document.body.addEventListener('click', closeMenu)
+            return () => document.body.removeEventListener('click', closeMenu)
+        }
+    }, [isMenuOpened])
+
     function handleDelete() {
         deleteComment(comment.id)
         setMenuOpened(false)
@@ -29,8 +37,8 @@ function Comment({comment, isOwner, deleteComment, changeComment}: PropsType) {
         changeComment(comment.id, text)
     }
 
-    function toggleMenu() {
-        setMenuOpened(!isMenuOpened)
+    function turnMenuOn() {
+        setMenuOpened(true)
     }
 
     function startEditing() {
@@ -51,7 +59,7 @@ function Comment({comment, isOwner, deleteComment, changeComment}: PropsType) {
                               textareaClassName={'blue-input'} cancelButtonClassName={'red-btn'}
                               saveButtonClassName={'blue-btn'} editButtonClassName={s.edit}/>
         </div>
-        {isOwner && <button onClick={toggleMenu} className={s.icon}><BsThreeDotsVertical/></button>}
+        {isOwner && <button onClick={turnMenuOn} className={s.icon}><BsThreeDotsVertical/></button>}
         {isMenuOpened && <ul className={s.menu}>
             <li onClick={handleDelete}><span><IoMdTrash/></span>Delete</li>
             <li onClick={startEditing}><span><HiPencil/></span>Edit</li>
