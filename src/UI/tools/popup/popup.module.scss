@@ -1,0 +1,54 @@
+.popup {
+  z-index: 100;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  transition: 1s;
+  box-sizing: border-box;
+  border: 1px solid;
+  width: 25rem;
+  max-width: 100%;
+  border-radius: 8px;
+  background-color: white;
+  position: fixed;
+
+  .question {
+    text-align: center;
+    padding: 1rem;
+
+    span {
+      font-size: 1.1rem;
+    }
+  }
+
+  .buttons {
+    width: 100%;
+    border-top: 1px solid grey;
+    height: 2rem;
+
+    button {
+      font-weight: bolder;
+      outline: none;
+      border: none;
+
+      background-color: inherit;
+      width: 50%;
+      height: 100%;
+
+      &:nth-child(1) {
+        border-right: 1px grey solid;
+        border-bottom-left-radius: 8px;
+      }
+
+      &:nth-child(2) {
+        color: #3946f7;
+        border-bottom-right-radius: 8px;
+      }
+
+      &:hover {
+        background-color: #F0F0F0;
+      }
+    }
+  }
+}

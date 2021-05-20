@@ -16,12 +16,13 @@
 .comments h3 {
   font-size: 1.75rem;
   font-weight: bolder;
-  margin-bottom: 1.5rem;
+  margin: 1.5rem 0;
 }
 .comments .comment {
   position: relative;
   margin-top: 1rem;
   display: flex;
+  margin-bottom: 1rem;
 }
 .comments .comment .photo {
   margin-right: 0.5rem;

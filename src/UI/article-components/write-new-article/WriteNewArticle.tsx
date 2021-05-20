@@ -5,7 +5,7 @@ import {useAppDispatch} from "../../../BLL/store";
 import {addArticle} from "../../../BLL/slices/article-slice";
 import {unwrapResult} from "@reduxjs/toolkit";
 import {useSelector} from "react-redux";
-import {getCurrentUserSelector} from "../../../BLL/selectors";
+import {currentUserSelector} from "../../../BLL/selectors";
 import {Redirect} from "react-router-dom";
 import TextareaAutosize from 'react-textarea-autosize'
 import {Formik, FormikHelpers, Form, Field, ErrorMessage} from "formik";
@@ -31,7 +31,7 @@ function WriteNewArticle() {
     const history = useHistory()
 
     const dispatch = useAppDispatch()
-    const user = useSelector(getCurrentUserSelector)
+    const user = useSelector(currentUserSelector)
 
     async function handleSubmit(values: ArticleBodyType, {setSubmitting}: FormikHelpers<ArticleBodyType>) {
         setSubmitting(true)
@@ -61,7 +61,7 @@ function WriteNewArticle() {
                 <Form className={s.form}>
                     <div className={s.field}>
                         <label htmlFor="header">Header</label>
-                        <Field name={'header'} style={{maxWidth: '46.5rem'}} className={'blue-input'} maxLength={100}/>
+                        <Field name={'header'} style={{maxWidth: '900px'}} className={'blue-input'} maxLength={120}/>
                         <ErrorMessage name={'header'}>{(msg: string) => <span>{msg}</span>}</ErrorMessage>
                     </div>
                     <div className={s.field}>

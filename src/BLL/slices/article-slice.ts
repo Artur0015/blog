@@ -29,17 +29,11 @@ export const addComment = createAsyncThunk<CommentType, { articleId: number, tex
     'article-main-page-UI/addComment',
     async ({articleId, text}, {rejectWithValue, getState}) => {
         try {
-            const id = (await articlesAPI.addComment(articleId, text)).data.id
-
-            const now = new Date()
-            const monthShortNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-            const pubDate = `${now.getFullYear()} ${now.getMonth()} ${monthShortNames[now.getMonth()]} ` +
-                `${now.getDate()} ${now.getHours()} ${now.getMinutes()}`
-
-            const user = getState().auth
-
-            if (user.isAuthenticated) return {text, pubDate, author: user, id} // checking only for typescript
-            return rejectWithValue(null)  // won't get here(error will be thrown from server, if user is not authenticated)
+            const {id} = (await articlesAPI.addComment(articleId, text)).data
+            const author = getState().auth
+            const pubDate = new Date().toString()
+            if (author.isAuthenticated) return {text, pubDate, author, id} // checking only for typescript
+            return rejectWithValue(null)  // won't get here(error will be thrown from server if user is not authenticated)
         } catch (e) {
             return rejectWithValue(e.response.data)
         }
@@ -208,10 +202,6 @@ const articlesSlice = createSlice({
             state.article.header = payload.header
             state.article.text = payload.text
         })
-        builder.addCase(deleteArticle.fulfilled, () => ({
-            article: {} as FullArticleType,
-            comments: [] as Array<CommentType>
-        }))
         builder.addCase(putLike.rejected, ({article}) => {
             article.isLiked = false
             article.likes -= 1

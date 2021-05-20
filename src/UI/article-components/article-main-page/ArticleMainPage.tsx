@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {useParams} from "react-router-dom"
 import Article from "./article/Article"
 import Preloader from "../../tools/preloader/Preloader"
 import {ArticleBodyType} from "../../../common-types"
 import {useSelector} from "react-redux";
-import {getArticleCommentsSelector, getArticleSelector, getCurrentUserSelector} from "../../../BLL/selectors";
+import {articleCommentsSelector, articleSelector, currentUserSelector} from "../../../BLL/selectors";
 import {useAppDispatch} from "../../../BLL/store";
 import {
     addComment,
@@ -20,42 +20,50 @@ import CommentInput from "./comments/CommentInput";
 import Comment from "./comments/Comment";
 import Error from "../../tools/error/Error";
 import {useHistory} from "react-router";
+import {unwrapResult} from "@reduxjs/toolkit";
 
 
 function ArticleMainPage() {
     const [isLoadingArticle, setLoadingArticle] = useState(true)
     const [areLoadingComments, setLoadingComments] = useState(true)
+    const [isError, setError] = useState(false)
 
     const id = Number(useParams<{ articleId: string }>().articleId)
 
     const history = useHistory()
 
     const dispatch = useAppDispatch()
-    const article = useSelector(getArticleSelector)
-    const comments = useSelector(getArticleCommentsSelector)
-    const user = useSelector(getCurrentUserSelector)
+    const article = useSelector(articleSelector)
+    const comments = useSelector(articleCommentsSelector)
+    const user = useSelector(currentUserSelector)
 
     useEffect(() => {
-        dispatch(getArticle(id)).then(() => setLoadingArticle(false))
-        dispatch(getArticleComments(id)).then(() => setLoadingComments(false))
-    }, [dispatch, id])
+        dispatch(getArticle(id))
+            .then(unwrapResult)
+            .catch(() => setError(true))
+            .then(() => setLoadingArticle(false))
+        dispatch(getArticleComments(id)).finally(() => setLoadingComments(false))
+    }, [id])
 
-    async function handleArticleDelete() {
-        await dispatch(deleteArticle(article.id))
-        history.push('/')
+    function handleArticleDelete() {
+        setLoadingArticle(true)
+        dispatch(deleteArticle(article.id)).finally(() => {
+            history.push('/')
+        })
+
     }
 
     function handleCommentAdd(text: string) {
         dispatch(addComment({articleId: id, text}))
     }
 
-    function handleDeleteComment(id: number) {
+    const handleDeleteComment = useCallback((id: number) => {
         dispatch(deleteComment(id))
-    }
+    }, [])
 
-    function handleCommentChange(id: number, text: string) {
+    const handleCommentChange = useCallback((id: number, text: string) => {
         dispatch(changeComment({id, text}))
-    }
+    }, [])
 
     function toggleLike() {
         if (user.isAuthenticated) {
@@ -75,11 +83,8 @@ function ArticleMainPage() {
         dispatch(changeArticle({id: article.id, article: changedArticle}))
     }
 
-    if (isLoadingArticle) {
-        return <Preloader/>
-    }
-
-    if (!article.id) return <Error/>
+    if (isLoadingArticle) return <Preloader/>
+    if (isError) return <Error/>
 
     return <div className={articleStyles.main}>
         <Article article={article} changeArticle={saveArticleChanges} user={user} toggleLike={toggleLike}

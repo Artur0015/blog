@@ -1,0 +1,86 @@
+$navHeight: 2rem;
+
+.nav {
+  top: 0;
+  background-color: white;
+  height: $navHeight;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+  position: sticky;
+
+  img {
+    margin-left: auto;
+    width: 2rem;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  a{
+    margin-left: auto;
+    padding: 1px 6px;
+  }
+}
+
+.menu {
+  overflow: auto;
+  transition: 0.5s;
+  box-sizing: border-box;
+  z-index: 3;
+  background-color: white;
+  top: 0;
+  bottom: 0;
+  width: 13rem;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+
+  .buttonWrapper {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    height: $navHeight;
+    border-bottom: 1px grey solid;
+  }
+
+  a {
+    padding: 0.65rem 0.5rem;
+    font-size: 1.2rem;
+    font-weight: bolder;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    color: #4D4D4D;
+
+    &:hover {
+      background-color: #E9E9E9;
+      cursor: pointer;
+    }
+
+    span {
+      vertical-align: middle;
+      margin-right: 0.75rem;
+    }
+  }
+
+  .active{
+    background-color: #D2D2D2;
+  }
+}
+
+.nav button, .buttonWrapper button, .nav a{
+  height: 100%;
+  border: none;
+  outline: none;
+  background-color: inherit;
+
+  svg {
+    width: 1.5rem;
+    height: inherit;
+  }
+}
+
+
+.closed {
+  margin-left: -13rem;
+}

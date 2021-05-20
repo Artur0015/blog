@@ -1,4 +1,4 @@
-import {Redirect, useHistory, Link} from "react-router-dom";
+import {Redirect, Link} from "react-router-dom";
 import * as Yup from "yup";
 import s from "./login-signup.module.scss";
 import {FormikHelpers, Formik, Form, Field, ErrorMessage} from "formik";
@@ -7,7 +7,8 @@ import {useAppDispatch} from "../../BLL/store";
 import {signupUser} from "../../BLL/slices/auth-slice";
 import {unwrapResult} from "@reduxjs/toolkit";
 import {useSelector} from "react-redux";
-import {getCurrentUserSelector} from "../../BLL/selectors";
+import {currentUserSelector} from "../../BLL/selectors";
+import {useHistory} from "react-router";
 
 
 const initialValues = {
@@ -30,7 +31,7 @@ function Signup() {
     const history = useHistory()
 
     const dispatch = useAppDispatch()
-    const user = useSelector(getCurrentUserSelector)
+    const user = useSelector(currentUserSelector)
 
     function validatePassword(password: string) {
         if (/^\d+$/.test(password)) return 'Password must include letters'

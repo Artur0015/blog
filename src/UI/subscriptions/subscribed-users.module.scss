@@ -1,0 +1,42 @@
+.empty {
+  font-size: 1.5rem;
+  font-weight: bolder;
+  text-align: center;
+}
+
+.usersList {
+  display: flex;
+  flex-direction: column;
+
+  .user {
+    border-bottom: 1px solid;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+
+    a {
+      flex: 1 1;
+      border-radius: 10px;
+      img {
+        vertical-align: middle;
+        width: 3.5rem;
+        height: 3rem;
+        margin-right: 0.5rem;
+      }
+
+      span {
+        font-size: 1.3rem;
+        font-weight: bolder;
+      }
+
+      &:hover {
+        background-color: #EEEEEE;
+      }
+    }
+
+    .subBtn{
+      margin-left: 0.5rem;
+      border-radius: 25px;
+    }
+  }
+}

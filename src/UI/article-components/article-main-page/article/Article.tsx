@@ -6,6 +6,7 @@ import ArticleLikeDislike from "./ArticleLikesDislikes";
 import EditableTextarea from "../../../tools/EditableTextarea";
 import UserPhoto from "../../../tools/UserPhoto";
 import {configureDate} from "../../articles-menu/Post";
+import ButtonPopup from "../../../tools/popup/Popup";
 import {IoMdTrash} from "react-icons/all";
 
 
@@ -30,12 +31,12 @@ function Article({article, changeArticle, user, toggleDislike, toggleLike, delet
     const articleMinLengthValidator = (text: string) => text.length > 300
 
     return <div className={s.article}>
-        <div className={s.user}>
-            <Link to={`/profile/${article.author?.username}`}>
+        <Link to={`/profile/${article.author?.username}`}>
+            <div className={s.user}>
                 <UserPhoto photo={article.author?.photo} halfRound/>
-            </Link>
-            <Link to={`/profile/${article.author?.username}`}>{article.author?.username}</Link>
-        </div>
+                <span>{article.author?.username}</span>
+            </div>
+        </Link>
         <small>{pubDateInCorrectForm}</small>
         <h1>{article.header}</h1>
         {article.photo && <div className={s.container}>
@@ -50,7 +51,10 @@ function Article({article, changeArticle, user, toggleDislike, toggleLike, delet
         <ArticleLikeDislike isLiked={article.isLiked} isDisliked={article.isDisliked} likes={article.likes}
                             dislikes={article.dislikes} toggleLike={toggleLike} toggleDislike={toggleDislike}
                             isAuthenticated={user.isAuthenticated}/>
-        {isOwner && <button className={s.transparent + ' ' + s.delete} onClick={deleteArticle}><IoMdTrash/></button>}
+        {isOwner &&
+        <ButtonPopup questionText={'Are you sure that you want to delete this article?'} acceptText={'Delete'}
+                     buttonText={<IoMdTrash/>} onAccept={deleteArticle}
+                     buttonClassName={s.transparent + ' ' + s.delete}/>}
     </div>
 }
 

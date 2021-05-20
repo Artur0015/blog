@@ -1,6 +1,6 @@
 import {CommonArticleType} from "../../../common-types";
 import Post from "./Post";
-import React from "react";
+import React, {memo} from "react";
 import s from './menu.module.scss'
 import Paginator from "../../tools/paginator/Paginator";
 
@@ -12,16 +12,20 @@ type PropsType = {
     withUsername: boolean
 }
 
-function Articles({articles, currentPage, withUsername, totalPages}: PropsType) {
+const Articles = memo(({articles, currentPage, withUsername, totalPages}: PropsType) => {
+    if (articles.length === 0) {
+        return <h2 className={s.empty}>No Articles Yet</h2>
+    }
+
     return <>
-            <div className={s.articles}>
-                {articles.map((article: CommonArticleType) => (
-                    <Post key={article.id} article={article} withUsername={withUsername}/>))}
-            </div>
-            <div className={s.paginator}>
+        <div className={s.articles}>
+            {articles.map((article: CommonArticleType) => (
+                <Post key={article.id} article={article} withUsername={withUsername}/>))}
+        </div>
+        <div className={s.paginator}>
             {totalPages > 1 && <Paginator currentPage={currentPage} totalPages={totalPages}/>}
-            </div>
-        </>
-}
+        </div>
+    </>
+})
 
 export default Articles

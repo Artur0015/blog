@@ -1,4 +1,4 @@
-import {useHistory, Redirect, Link} from "react-router-dom";
+import {Redirect, Link} from "react-router-dom";
 import React from "react";
 import {FormikHelpers, Formik, Form, Field, ErrorMessage} from "formik";
 import s from "./login-signup.module.scss";
@@ -7,7 +7,7 @@ import {useAppDispatch} from "../../BLL/store";
 import {loginUser} from "../../BLL/slices/auth-slice";
 import {unwrapResult} from "@reduxjs/toolkit";
 import {useSelector} from "react-redux";
-import {getCurrentUserSelector} from "../../BLL/selectors";
+import {currentUserSelector} from "../../BLL/selectors";
 import {CredentialsType} from "../../common-types";
 
 
@@ -22,10 +22,8 @@ const initialValues: CredentialsType = {
 }
 
 function Login() {
-    const history = useHistory()
-
     const dispatch = useAppDispatch()
-    const user = useSelector(getCurrentUserSelector)
+    const user = useSelector(currentUserSelector)
 
     async function handleSubmit(credentials: CredentialsType, {
         setErrors,
@@ -34,7 +32,6 @@ function Login() {
         setSubmitting(true)
         try {
             await dispatch(loginUser(credentials)).then(unwrapResult)
-            history.push('/')
         } catch (e) {
             setErrors({password: 'Invalid Credentials'})
         } finally {

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {memo, useEffect, useRef, useState} from "react";
 import {CommentType} from "../../../../common-types";
 import s from './comment.module.scss'
 import UserPhoto from "../../../tools/UserPhoto";
@@ -14,7 +14,7 @@ type PropsType = {
     changeComment: (id: number, text: string) => void
 }
 
-function Comment({comment, isOwner, deleteComment, changeComment}: PropsType) {
+const Comment = memo(({comment, isOwner, deleteComment, changeComment}: PropsType) => {
     const [isMenuOpened, setMenuOpened] = useState(false)
     const editButtonRef = useRef<HTMLButtonElement>(null)
 
@@ -66,6 +66,6 @@ function Comment({comment, isOwner, deleteComment, changeComment}: PropsType) {
         </ul>}
 
     </div>
-}
+})
 
 export default Comment

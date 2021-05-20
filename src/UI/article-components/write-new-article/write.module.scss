@@ -18,7 +18,7 @@ $color: #3946f7;
   .field {
     margin-bottom: 2rem;
 
-    label{
+    label {
       font-weight: bold;
       display: block;
       margin-bottom: 0.6rem;
@@ -33,35 +33,37 @@ $color: #3946f7;
     }
   }
 
-  .photo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid $color;
-    border-radius: 9px;
-
-    &:hover {
-      background-color: #F2F2F2;
-      cursor: pointer;
-    }
-    @include photoContainerWithSpecificRatio(1rem 0, 43.75%, 100%, 40rem);
-
-    img:hover{
-      cursor: auto;
-    }
-
-    button {
-      position: absolute;
-      top: 1px;
-      right: 5px;
-      border: none;
-      outline: none;
-      background: none;
-    }
-  }
 
   button {
     border-radius: 15px;
     margin-top: 0.5rem;
+  }
+}
+
+.photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid $color;
+  border-radius: 9px;
+
+  &:hover {
+    background-color: #F2F2F2;
+    cursor: pointer;
+  }
+
+  @include photoContainerWithSpecificRatio(1rem 0, 43.75%, 100%, 40rem);
+  //
+  img:hover {
+    cursor: auto;
+  }
+
+  button {
+    position: absolute;
+    top: 1px;
+    right: 5px;
+    border: none;
+    outline: none;
+    background: none;
   }
 }

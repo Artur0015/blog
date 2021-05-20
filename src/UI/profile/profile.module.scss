@@ -1,8 +1,16 @@
+.subBtn {
+  margin-left: 1rem;
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+  border-radius: 20px;
+}
+
+
 .user {
   font-weight: bolder;
   margin: 1rem;
   @media screen and (max-width: 30rem) {
-    font-size: 3.6vw;
+    font-size: 3.4vw;
   }
 
   img {
@@ -38,6 +46,16 @@
   h2 {
     margin-top: 2rem;
     font-size: 1.5em;
+  }
+}
+
+@media screen and (max-width: 40rem) {
+  .user, {
+    margin: 0.5rem;
+  }
+
+  .subBtn{
+    margin-left: 0.5rem;
   }
 }
 

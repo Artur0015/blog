@@ -4,7 +4,10 @@
     margin-right: 0.3rem;
     padding: 0.2rem 0.5rem;
     border-radius: 5px;
-    &.active, &:hover {
+    &.active{
+      background-color: #C4C4C4;
+    }
+    &:hover {
       background-color: #E6E6E6;
     }
   }

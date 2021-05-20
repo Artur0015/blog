@@ -50,17 +50,17 @@ export type BaseUserType = {
     photo: string | null
 }
 
-export type FullUserType = BaseUserType & {
+export type UserSubscriptionsType = BaseUserType & {
+    isSubscribed: boolean
+}
+
+export type FullUserType = UserSubscriptionsType & {
     aboutMe: string
     dateJoined: string
     timesLiked: number
     timesDisliked: number
+    subscribers: number
 }
-
-type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> & U[keyof U]
-
-export type UserEditableFieldsType = AtLeastOne<{ username: string, aboutMe: string, photo: File }> // at least one from username/aboutMe/photo
-
 
 export type UserType = { isAuthenticated: false } | ({ isAuthenticated: true } & BaseUserType)
 

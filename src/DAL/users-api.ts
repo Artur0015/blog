@@ -2,7 +2,6 @@ import {
     CredentialsType,
     ArticlesWithCountType,
     FullUserType,
-    UserEditableFieldsType,
     ArticleRequestParamsType,
     BaseUserType
 } from '../common-types';
@@ -20,25 +19,27 @@ export const usersApi = {
         return await instanceWithoutToken.post<void>('users/', credentials)
     },
     async getUserInfoByUsername(username: string) {
-        return await instanceWithoutToken.get<FullUserType>(`users/${username}/`)
+        return await instanceWithToken.get<FullUserType>(`users/${username}/`)
     },
     async getUserArticlesByUsername(username: string, {currentPage, pageSize}: ArticleRequestParamsType) {
         return await instanceWithoutToken.get<ArticlesWithCountType>(
             `users/${username}/articles/?page=${currentPage}${pageSize ? `&page_size=${pageSize}` : ''}`)
     },
-    async changeUser(fields: UserEditableFieldsType) {
-        let data: UserEditableFieldsType | FormData = fields
-        let headers: undefined | { 'Content-Type': string }
-        if (fields.photo) {
-            data = new FormData()
-            let i: keyof typeof fields
-            for (i in fields) {
-                const value = fields[i]
-                if (value) {
-                    data.append(i, value)
-                }
-            }
-        }
-        return await instanceWithToken.patch<{photo?: string}>(`users/me/`, data, {headers})
+    async changeUserAboutMe(aboutMe: string) {
+        return await instanceWithToken.patch<void>(`users/me/`, {aboutMe})
+    },
+    async changeUserPhoto(photo: File) {
+        const formData = new FormData()
+        formData.append('photo', photo)
+        return await instanceWithToken.patch<{photo: string}>('users/me/', formData)
+    },
+    async subscribe(username: string) {
+        return await instanceWithToken.post<void>(`users/${username}/subscribers/`)
+    },
+    async unsubscribe(username: string) {
+        return await instanceWithToken.delete<void>(`users/${username}/subscribers/`)
+    },
+    async getMySubscriptions() {
+        return await instanceWithToken.get<Array<BaseUserType>>('subscriptions/')
     }
 }

@@ -1,0 +1,39 @@
+.empty {
+  font-size: 1.5rem;
+  font-weight: bolder;
+  text-align: center;
+}
+
+.usersList {
+  display: flex;
+  flex-direction: column;
+}
+.usersList .user {
+  border-bottom: 1px solid;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+.usersList .user a {
+  flex: 1 1;
+  border-radius: 10px;
+}
+.usersList .user a img {
+  vertical-align: middle;
+  width: 3.5rem;
+  height: 3rem;
+  margin-right: 0.5rem;
+}
+.usersList .user a span {
+  font-size: 1.3rem;
+  font-weight: bolder;
+}
+.usersList .user a:hover {
+  background-color: #EEEEEE;
+}
+.usersList .user .subBtn {
+  margin-left: 0.5rem;
+  border-radius: 25px;
+}
+
+/*# sourceMappingURL=subscribed-users.module.css.map */

@@ -2,12 +2,23 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {ArticleRequestParamsType, ArticlesWithCountType} from "../../common-types";
 import {articlesAPI} from "../../DAL/articles-api";
 
-export const getArticlesOfPage = createAsyncThunk<ArticlesWithCountType, ArticleRequestParamsType>(
+export const getArticlesOfPage = createAsyncThunk<void, ArticleRequestParamsType>(
     'menu/getArticlesOfPage',
-    async (requestParams, {rejectWithValue}) => {
+    async (requestParams, {rejectWithValue, dispatch}) => {
         try{
-            return (await articlesAPI.getArticlesOfPage(requestParams)).data
+            dispatch(menuSlice.actions.setArticles((await articlesAPI.getArticlesOfPage(requestParams)).data))
         } catch (e) {
+            return rejectWithValue(e.response.data)
+        }
+    }
+)
+
+export const getSubscribedArticles = createAsyncThunk<void, ArticleRequestParamsType>(
+    'menu/getSubscribedArticles',
+    async (requestParams, {rejectWithValue, dispatch}) => {
+        try{
+             dispatch(menuSlice.actions.setArticles((await articlesAPI.getSubscribedArticles(requestParams)).data))
+        }catch (e) {
             return rejectWithValue(e.response.data)
         }
     }
@@ -15,15 +26,10 @@ export const getArticlesOfPage = createAsyncThunk<ArticlesWithCountType, Article
 
 const menuSlice = createSlice({
     name: 'menu',
-    initialState: {
-        articles: {} as ArticlesWithCountType
+    initialState: {} as ArticlesWithCountType,
+    reducers: {
+        setArticles: (state, {payload}) => payload
     },
-    reducers: {},
-    extraReducers: builder => {
-        builder.addCase(getArticlesOfPage.fulfilled, (state, {payload}) => {
-            state.articles = payload
-        })
-    }
 })
 
 export default menuSlice

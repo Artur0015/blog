@@ -12,6 +12,11 @@ export const articlesAPI = {
             `articles/?page=${currentPage}${pageSize ? `&page_size=${pageSize}` : ''}`)
 
     },
+    async getSubscribedArticles({currentPage, pageSize}: ArticleRequestParamsType) {
+        return await instanceWithToken.get<ArticlesWithCountType>(
+            `subscriptions/articles/?page=${currentPage}${pageSize ? `&page_size=${pageSize}` : ''}`
+        )
+    },
     async getArticle(id: number) {
         return await instanceWithToken.get<FullArticleType>(`articles/${id}/`)
     },

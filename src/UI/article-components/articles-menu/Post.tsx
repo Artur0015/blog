@@ -7,19 +7,25 @@ import {IoMdThumbsDown, IoMdThumbsUp} from "react-icons/all";
 
 
 export function configureDate(date: string) {
-    const [year, month, monthName, day, hour, minute] = date.split(' ')
+    const pubDate = new Date(date)
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ]
+    const [pubYear, pubDay, hour, month] = [pubDate.getFullYear(), pubDate.getDate(), pubDate.getHours(), pubDate.getMonth()]
+    const minutes = pubDate.getMinutes() < 10 ? '0' + pubDate.getMinutes() : pubDate.getMinutes()
     const currentDate = new Date()
     const today = currentDate.getDate()
-    if (!(currentDate.getFullYear() === Number(year))) { // not this year
-        return `${monthName} ${year}`
+
+    if (!(currentDate.getFullYear() === pubYear)) { // not this year
+        return `${monthNames[month]} ${pubYear}`
     }
-    if (today === Number(day) + 1) { // yesterday
-        return `Yesterday at ${hour}:${minute}`
+    if (today === pubDay + 1) { // yesterday
+        return `Yesterday at ${hour}:${minutes}`
     }
-    if (today === Number(day)) { // today
-        return `Today at ${hour}:${minute}`
+    if (today === pubDay) { // today
+        return `Today at ${hour}:${minutes}`
     }
-    return `${monthName} ${day}` // this year
+    return `${monthNames[month]} ${pubDay}` // this year
 }
 
 type PropsType = {
@@ -33,25 +39,27 @@ function Post({article, withUsername}: PropsType) {
     const pubDateInCorrectForm = configureDate(article.pubDate)
 
     return <div className={s.post}>
-        <Link to={`/article/${article.id}`}>
-            {withUsername && article.author && <div className={s.top}>
-                <Link to={`/profile/${article.author.username}`}>
-                    <UserPhoto photo={article.author.photo} halfRound/>
-                </Link>
-                <Link to={`/profile/${article.author.username}`}>{article.author.username}</Link>
+        {withUsername && article.author && <Link to={`/profile/${article.author.username}`}>
+            <div className={s.user}>
+                <UserPhoto photo={article.author.photo} halfRound/>
+                <span>{article.author.username}</span>
+            </div>
+        </Link>}
 
-            </div>}
-            <div className={s.container}>
-                <img src={article.photo ? article.photo : emptyArticlePhoto} alt="article" className={s.img}/>
+        <Link to={`/article/${article.id}`}>
+            <div className={s.body}>
+                <div className={s.container}>
+                    <img src={article.photo ? article.photo : emptyArticlePhoto} alt="article" className={s.img}/>
+                </div>
+                <h4>{article.header}</h4>
+                <div className={s.likes}>
+                    <IoMdThumbsUp size={25}/>
+                    <span>{article.likes}</span>
+                    <IoMdThumbsDown size={25}/>
+                    <span>{article.dislikes}</span>
+                </div>
+                <small>{pubDateInCorrectForm}</small>
             </div>
-            <h4>{article.header}</h4>
-            <div className={s.likes}>
-                <IoMdThumbsUp size={25}/>
-                <span>{article.likes}</span>
-                <IoMdThumbsDown size={25}/>
-                <span>{article.dislikes}</span>
-            </div>
-            <small>{pubDateInCorrectForm}</small>
         </Link>
     </div>
 }

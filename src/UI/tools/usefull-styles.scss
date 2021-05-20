@@ -52,6 +52,10 @@
   @include btn(#FD2525)
 }
 
+.grey-btn{
+  @include btn(grey)
+}
+
 .blue-input {
   border: none;
   border-bottom: 1px solid;
