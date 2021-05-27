@@ -25,7 +25,7 @@ function ButtonPopup({questionText, onAccept, acceptText, buttonClassName, butto
     }
 
     const button = <button className={buttonClassName} style={buttonStyles}
-                                    onClick={() => setOpen(true)}>{buttonText}</button>
+                           onClick={() => setOpen(true)}>{buttonText}</button>
 
     return isOpen
         ? <>
@@ -39,7 +39,7 @@ function ButtonPopup({questionText, onAccept, acceptText, buttonClassName, butto
                     <button onClick={handleAccept}>{acceptText}</button>
                 </div>
             </div>
-            <BackgroundCloser/>
+            <BackgroundCloser onClick={closePopup}/>
         </>
         : button
 }

@@ -1,7 +1,7 @@
 import React, {ChangeEvent} from "react";
 import {useRef} from "react";
 import s from './profile.module.scss'
-import {ProfileType} from "../../common-types";
+import {FullUserType} from "../../common-types";
 import UserPhoto from "../tools/UserPhoto";
 import EditableTextarea from "../tools/EditableTextarea";
 
@@ -25,7 +25,7 @@ function getRatingColor(rating: number): 'green' | 'blue' | 'red' {
 }
 
 type PropsType = {
-    user: ProfileType
+    user: FullUserType
     isOwner: boolean
     setPhoto: (photo: File) => void
     setAboutMe: (aboutMe: string) => void

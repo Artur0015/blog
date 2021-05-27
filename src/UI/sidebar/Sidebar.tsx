@@ -16,6 +16,7 @@ import {useAppDispatch} from "../../BLL/store";
 import {logoutUser} from "../../BLL/slices/auth-slice";
 import {NavLink, Link} from "react-router-dom";
 import BackgroundCloser from "../tools/background-closer/BackgroundCloser";
+import Popup from "../tools/popup/Popup";
 
 
 function Sidebar() {
@@ -37,12 +38,14 @@ function Sidebar() {
     }
 
     return <>
+
         <div className={s.nav}>
             <button onClick={openMenu}>
                 <FiMenu/>
             </button>
             {user.isAuthenticated
-                ? <button onClick={handleLogoutClick} style={{marginLeft: 'auto'}}><HiLogout /></button>
+                ? <Popup questionText={'Are you sure that you want to log out from this account?'} acceptText={'Log Out'}
+                    onAccept={handleLogoutClick} buttonText={<HiLogout/>} buttonStyles={{marginLeft: 'auto'}}/>
                 : <Link className={s.rightTopBtn} to={'/login'}>
                     <HiLogin/>
                 </Link>}
@@ -67,7 +70,7 @@ function Sidebar() {
                         <span><BsPeopleCircle/></span>Profile
                     </NavLink>
                     <NavLink to={'/write'} exact activeClassName={s.active}>
-                        <span><HiOutlinePencil /></span>Write Article
+                        <span><HiOutlinePencil/></span>Write Article
                     </NavLink>
                 </>
                 : <>
@@ -79,7 +82,7 @@ function Sidebar() {
                     </NavLink>
                 </>}
         </div>
-        {isMenuOpen && <BackgroundCloser onClick={closeMenu} />}
+        {isMenuOpen && <BackgroundCloser onClick={closeMenu}/>}
     </>
 
 }

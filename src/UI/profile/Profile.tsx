@@ -1,6 +1,11 @@
 import {useSelector} from "react-redux";
 import {useLocation, useParams} from "react-router-dom";
-import {currentUserSelector, profileSelector} from "../../BLL/selectors";
+import {
+    articlesCountSelector,
+    articlesOfCurrentPageSelector,
+    currentUserSelector,
+    profileSelector
+} from "../../BLL/selectors";
 import React, {useEffect, useState} from "react";
 import Preloader from "../tools/preloader/Preloader";
 import Error from "../tools/error/Error";
@@ -10,7 +15,6 @@ import {useAppDispatch} from "../../BLL/store";
 import {
     changeUserAboutMe,
     changeUserPhoto,
-    getUserArticlesByUsername,
     getUserByUsername,
     subscribeToUser,
     unsubscribeFromUser,
@@ -18,6 +22,7 @@ import {
 import {unwrapResult} from "@reduxjs/toolkit";
 import s from './profile.module.scss'
 import ButtonPopup from "../tools/popup/Popup";
+import {getUserArticles} from "../../BLL/slices/menu-slice";
 
 function Profile() {
     const [isLoadingUser, setLoadingUser] = useState(true)
@@ -31,6 +36,8 @@ function Profile() {
     const dispatch = useAppDispatch()
     const currentUser = useSelector(currentUserSelector)
     const profileUser = useSelector(profileSelector)
+    const articles = useSelector(articlesOfCurrentPageSelector)
+    const articlesCount = useSelector(articlesCountSelector)
     const isOwner = currentUser.isAuthenticated && currentUser.username === username
 
     useEffect(() => {
@@ -43,10 +50,13 @@ function Profile() {
 
     useEffect(() => {
         setLoadingArticles(true)
-        dispatch(getUserArticlesByUsername({
+        dispatch(getUserArticles({
             username,
             requestParams: {currentPage, pageSize}
-        })).then(() => setLoadingArticles(false))
+        }))
+            .then(unwrapResult)
+            .catch(() => setError(true))
+            .then(() => setLoadingArticles(false))
     }, [currentPage, username])
 
 
@@ -66,7 +76,7 @@ function Profile() {
         dispatch(unsubscribeFromUser(profileUser.username))
     }
 
-    if (isLoadingUser || areLoadingArticles) return <Preloader/>
+    if (isLoadingUser) return <Preloader/>
 
     if (isError) return <Error/>
 
@@ -78,8 +88,10 @@ function Profile() {
                            acceptText={'Unsubscribe'} buttonText={'Subscribed'}/>
             : <button onClick={handleSubscribe} className={s.subBtn + ' blue-btn'}>Subscribe</button>)}
 
-        <Articles withUsername={false} articles={profileUser.articles.data} currentPage={currentPage}
-                  totalPages={Math.ceil(profileUser.articles.count / pageSize)}/>
+        {areLoadingArticles
+            ? <div style={{textAlign: 'center'}}><Preloader notInCenter/></div>
+            : <Articles withUsername={false} articles={articles} currentPage={currentPage}
+                        totalPages={Math.ceil(articlesCount / pageSize)}/>}
     </>
 }
 

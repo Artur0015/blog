@@ -57,6 +57,9 @@
 .comments .comment .content .text .edit {
   display: none;
 }
+.comments .comment .content p {
+  white-space: pre-wrap;
+}
 .comments .comment .icon {
   position: absolute;
   right: 0;

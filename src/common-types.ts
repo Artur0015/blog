@@ -63,10 +63,3 @@ export type FullUserType = UserSubscriptionsType & {
 }
 
 export type UserType = { isAuthenticated: false } | ({ isAuthenticated: true } & BaseUserType)
-
-export type ProfileType = FullUserType & {
-    articles: {
-        count: number
-        data: Array<CommonArticleType>
-    }
-}

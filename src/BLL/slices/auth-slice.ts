@@ -8,6 +8,9 @@ export const getUserInfo = createAsyncThunk<void, void>(
     'auth/getUserInfo',
     async (_, {rejectWithValue, dispatch}) => {
         try {
+            if(!localStorage.getItem('token')) {
+                return rejectWithValue(null)
+            }
             const data = (await usersApi.getMyUserInfo()).data
             dispatch(authSlice.actions.setUser(data))
         } catch (e) {

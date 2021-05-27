@@ -104,9 +104,10 @@ export const putLike = createAsyncThunk<void, number>(
     'article-main-page-UI/putLike',
     async (articleId, {rejectWithValue, dispatch}) => {
         try {
-            dispatch(articlesSlice.actions.putLike())
+            dispatch(articleSlice.actions.putLike())
             await articlesAPI.putLike(articleId)
         } catch (e) {
+            dispatch(articleSlice.actions.deleteLike())
             return rejectWithValue(e.response.data)
         }
     }
@@ -116,9 +117,10 @@ export const putDislike = createAsyncThunk<void, number>(
     'article-main-page-UI/putDislike',
     async (articleId, {rejectWithValue, dispatch}) => {
         try {
-            dispatch(articlesSlice.actions.putDislike())
+            dispatch(articleSlice.actions.putDislike())
             await articlesAPI.putDislike(articleId)
         } catch (e) {
+            dispatch(articleSlice.actions.deleteDislike())
             return rejectWithValue(e.response.data)
         }
     }
@@ -128,9 +130,10 @@ export const deleteLike = createAsyncThunk<void, number>(
     'article-main-page-UI/deleteLike',
     async (articleId, {rejectWithValue, dispatch}) => {
         try {
-            dispatch(articlesSlice.actions.deleteLike())
+            dispatch(articleSlice.actions.deleteLike())
             await articlesAPI.deleteLike(articleId)
         } catch (e) {
+            dispatch(articleSlice.actions.putLike())
             return rejectWithValue(e.response.data)
         }
     }
@@ -140,16 +143,16 @@ export const deleteDislike = createAsyncThunk<void, number>(
     'article-main-page-UI/deleteDislike',
     async (articleId, {rejectWithValue, dispatch}) => {
         try {
-            dispatch(articlesSlice.actions.deleteDislike())
+            dispatch(articleSlice.actions.deleteDislike())
             await articlesAPI.deleteDislike(articleId)
         } catch (e) {
+            dispatch(articleSlice.actions.putDislike())
             return rejectWithValue(e.response.data)
         }
     }
 )
 
-
-const articlesSlice = createSlice({
+const articleSlice = createSlice({
     name: 'article',
     initialState: {
         article: {} as FullArticleType,
@@ -202,24 +205,8 @@ const articlesSlice = createSlice({
             state.article.header = payload.header
             state.article.text = payload.text
         })
-        builder.addCase(putLike.rejected, ({article}) => {
-            article.isLiked = false
-            article.likes -= 1
-        })
-        builder.addCase(putDislike.rejected, ({article}) => {
-            article.isDisliked = false
-            article.dislikes -= 1
-        })
-        builder.addCase(deleteLike.rejected, ({article}) => {
-            article.isLiked = true
-            article.likes += 1
-        })
-        builder.addCase(deleteDislike.rejected, ({article}) => {
-            article.isDisliked = true
-            article.dislikes += 1
-        })
 
     }
 })
 
-export default articlesSlice
+export default articleSlice

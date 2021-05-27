@@ -8,8 +8,8 @@ import {IoMdThumbsDown, IoMdThumbsUp} from "react-icons/all";
 
 export function configureDate(date: string) {
     const pubDate = new Date(date)
-    const monthNames = ["January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
+    const monthNamesShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     ]
     const [pubYear, pubDay, hour, month] = [pubDate.getFullYear(), pubDate.getDate(), pubDate.getHours(), pubDate.getMonth()]
     const minutes = pubDate.getMinutes() < 10 ? '0' + pubDate.getMinutes() : pubDate.getMinutes()
@@ -17,15 +17,17 @@ export function configureDate(date: string) {
     const today = currentDate.getDate()
 
     if (!(currentDate.getFullYear() === pubYear)) { // not this year
-        return `${monthNames[month]} ${pubYear}`
+        return `${monthNamesShort[month]} ${pubYear}`
     }
-    if (today === pubDay + 1) { // yesterday
-        return `Yesterday at ${hour}:${minutes}`
+    if (currentDate.getMonth() === month) {
+        if (today === pubDay + 1) { // yesterday
+            return `Yesterday at ${hour}:${minutes}`
+        }
+        if (today === pubDay) { // today
+            return `Today at ${hour}:${minutes}`
+        }
     }
-    if (today === pubDay) { // today
-        return `Today at ${hour}:${minutes}`
-    }
-    return `${monthNames[month]} ${pubDay}` // this year
+    return `${monthNamesShort[month]} ${pubDay}` // this year
 }
 
 type PropsType = {

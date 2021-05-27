@@ -17,7 +17,7 @@ function PhotoInput({currentPhoto, addPhoto, deletePhoto}: PropsType) {
     }
 
     function handlePhotoAdd(ev: ChangeEvent<HTMLInputElement>) {
-        if (ev.target.files?.length && ev.target.files[0].name.match(/.(jpg|jpeg|png|gif)$/i)) {
+        if (ev.target.files?.length) {
             addPhoto(ev.target.files[0])
         }
     }
@@ -39,7 +39,7 @@ function PhotoInput({currentPhoto, addPhoto, deletePhoto}: PropsType) {
                 </button>
             </>
             : <>
-                <input type="file" onChange={handlePhotoAdd} style={{display: 'none'}}
+                <input type="file" onChange={handlePhotoAdd} style={{display: 'none'}} accept={'image/*'}
                        ref={inputRef}/>
                 <p>Photo for article</p>
             </>

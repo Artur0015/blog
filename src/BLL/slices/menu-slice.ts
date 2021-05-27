@@ -5,7 +5,7 @@ import {articlesAPI} from "../../DAL/articles-api";
 export const getArticlesOfPage = createAsyncThunk<void, ArticleRequestParamsType>(
     'menu/getArticlesOfPage',
     async (requestParams, {rejectWithValue, dispatch}) => {
-        try{
+        try {
             dispatch(menuSlice.actions.setArticles((await articlesAPI.getArticlesOfPage(requestParams)).data))
         } catch (e) {
             return rejectWithValue(e.response.data)
@@ -16,9 +16,20 @@ export const getArticlesOfPage = createAsyncThunk<void, ArticleRequestParamsType
 export const getSubscribedArticles = createAsyncThunk<void, ArticleRequestParamsType>(
     'menu/getSubscribedArticles',
     async (requestParams, {rejectWithValue, dispatch}) => {
-        try{
-             dispatch(menuSlice.actions.setArticles((await articlesAPI.getSubscribedArticles(requestParams)).data))
-        }catch (e) {
+        try {
+            dispatch(menuSlice.actions.setArticles((await articlesAPI.getSubscribedArticles(requestParams)).data))
+        } catch (e) {
+            return rejectWithValue(e.response.data)
+        }
+    }
+)
+
+export const getUserArticles = createAsyncThunk<void, { username: string, requestParams: ArticleRequestParamsType }>(
+    'profile/getUserArticlesByUsername',
+    async ({username, requestParams}, {rejectWithValue, dispatch}) => {
+        try {
+            dispatch(menuSlice.actions.setArticles((await articlesAPI.getUserArticles(username, requestParams)).data))
+        } catch (e) {
             return rejectWithValue(e.response.data)
         }
     }

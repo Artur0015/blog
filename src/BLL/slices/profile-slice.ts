@@ -1,9 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {
-    ArticleRequestParamsType,
-    ArticlesWithCountType,
     FullUserType,
-    ProfileType,
 } from "../../common-types";
 import {usersApi} from "../../DAL/users-api";
 
@@ -14,17 +11,6 @@ export const getUserByUsername = createAsyncThunk<FullUserType, string>(
         try {
             return (await usersApi.getUserInfoByUsername(username)).data
 
-        } catch (e) {
-            return rejectWithValue(e.response.data)
-        }
-    }
-)
-
-export const getUserArticlesByUsername = createAsyncThunk<ArticlesWithCountType, { username: string, requestParams: ArticleRequestParamsType }>(
-    'profile/getUserArticlesByUsername',
-    async ({username, requestParams}, {rejectWithValue}) => {
-        try {
-            return (await usersApi.getUserArticlesByUsername(username, requestParams)).data
         } catch (e) {
             return rejectWithValue(e.response.data)
         }
@@ -55,51 +41,47 @@ export const changeUserPhoto = createAsyncThunk<string, File>(
     }
 )
 
-export const subscribeToUser = createAsyncThunk<string, string>(
+export const subscribeToUser = createAsyncThunk<void, string>(
     'profile/subscribe',
-    async (username, {rejectWithValue}) => {
+    async (username, {rejectWithValue, dispatch}) => {
         try {
+            dispatch(profileSlice.actions.subscribeToUser())
             await usersApi.subscribe(username)
-            return username
         } catch (e) {
-            return rejectWithValue(e.response.data)
+            dispatch(profileSlice.actions.unsubscribeFromUser())
+            return rejectWithValue(username)
         }
     }
 )
 
-export const unsubscribeFromUser = createAsyncThunk<string, string>(
+export const unsubscribeFromUser = createAsyncThunk<void, string>(
     'profile/unsubscribe',
-    async (username, {rejectWithValue}) => {
+    async (username, {rejectWithValue, dispatch}) => {
         try {
+            dispatch(profileSlice.actions.unsubscribeFromUser())
             await usersApi.unsubscribe(username)
-            return username
         } catch (e) {
-            return rejectWithValue(e.response.data)
+            dispatch(profileSlice.actions.subscribeToUser())
+            return rejectWithValue(username)
         }
     }
 )
 
 const profileSlice = createSlice({
         name: 'profile',
-        initialState: {} as ProfileType,
-        reducers: {},
+        initialState: {} as FullUserType,
+        reducers: {
+            subscribeToUser: (state) => {
+                state.subscribers += 1
+                state.isSubscribed = true
+            },
+            unsubscribeFromUser: (state) => {
+                state.subscribers -= 1
+                state.isSubscribed = false
+            }
+        },
         extraReducers: builder => {
-            builder.addCase(getUserArticlesByUsername.fulfilled, (state, {payload}) => {
-                state.articles = payload
-            })
-            builder.addCase(getUserByUsername.fulfilled, (state, {payload}) => ({...payload, articles: state.articles}))
-            builder.addCase(subscribeToUser.fulfilled, (state, {payload}) => {
-                if (payload === state.username) {
-                    state.isSubscribed = true
-                    state.subscribers += 1
-                }
-            })
-            builder.addCase(unsubscribeFromUser.fulfilled, (state, {payload}) => {
-                if (payload === state.username) {
-                    state.isSubscribed = false
-                    state.subscribers -= 1
-                }
-            })
+            builder.addCase(getUserByUsername.fulfilled, (state, {payload}) => payload)
             builder.addCase(changeUserAboutMe.fulfilled, (state, {payload}) => {
                 state.aboutMe = payload
             })

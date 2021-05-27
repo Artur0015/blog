@@ -8,14 +8,28 @@ import {instanceWithoutToken, instanceWithToken} from "./configs-and-tools";
 
 export const articlesAPI = {
     async getArticlesOfPage({currentPage, pageSize}: ArticleRequestParamsType) {
-        return await instanceWithoutToken.get<ArticlesWithCountType>(
-            `articles/?page=${currentPage}${pageSize ? `&page_size=${pageSize}` : ''}`)
-
+        return await instanceWithoutToken.get<ArticlesWithCountType>(`articles/`, {
+            params: {
+                page: currentPage,
+                page_size: pageSize
+            }
+        })
     },
     async getSubscribedArticles({currentPage, pageSize}: ArticleRequestParamsType) {
-        return await instanceWithToken.get<ArticlesWithCountType>(
-            `subscriptions/articles/?page=${currentPage}${pageSize ? `&page_size=${pageSize}` : ''}`
-        )
+        return await instanceWithToken.get<ArticlesWithCountType>(`subscriptions/articles/`, {
+            params: {
+                page: currentPage,
+                page_size: pageSize
+            }
+        })
+    },
+    async getUserArticles(username: string, {currentPage, pageSize}: ArticleRequestParamsType) {
+        return await instanceWithoutToken.get<ArticlesWithCountType>(`users/${username}/articles/`, {
+            params: {
+                page: currentPage,
+                page_size: pageSize
+            }
+        })
     },
     async getArticle(id: number) {
         return await instanceWithToken.get<FullArticleType>(`articles/${id}/`)

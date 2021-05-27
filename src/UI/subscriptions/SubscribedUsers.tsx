@@ -1,13 +1,12 @@
 import {useCallback, useEffect, useState} from "react";
 import {useAppDispatch} from "../../BLL/store";
-import {getMySubscriptions} from "../../BLL/slices/users-slice";
+import {getMySubscriptions, subscribeToUser, unsubscribeFromUser} from "../../BLL/slices/users-slice";
 import {useSelector} from "react-redux";
 import {currentUserSelector, usersSelector} from "../../BLL/selectors";
 import {unwrapResult} from "@reduxjs/toolkit";
 import Preloader from "../tools/preloader/Preloader";
 import Error from "../tools/error/Error";
 import s from './subscribed-users.module.scss'
-import {subscribeToUser, unsubscribeFromUser} from "../../BLL/slices/profile-slice";
 import User from "./User";
 import {Redirect} from "react-router-dom";
 

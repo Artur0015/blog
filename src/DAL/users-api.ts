@@ -1,8 +1,6 @@
 import {
     CredentialsType,
-    ArticlesWithCountType,
     FullUserType,
-    ArticleRequestParamsType,
     BaseUserType
 } from '../common-types';
 import {instanceWithoutToken, instanceWithToken} from "./configs-and-tools";
@@ -21,17 +19,13 @@ export const usersApi = {
     async getUserInfoByUsername(username: string) {
         return await instanceWithToken.get<FullUserType>(`users/${username}/`)
     },
-    async getUserArticlesByUsername(username: string, {currentPage, pageSize}: ArticleRequestParamsType) {
-        return await instanceWithoutToken.get<ArticlesWithCountType>(
-            `users/${username}/articles/?page=${currentPage}${pageSize ? `&page_size=${pageSize}` : ''}`)
-    },
     async changeUserAboutMe(aboutMe: string) {
         return await instanceWithToken.patch<void>(`users/me/`, {aboutMe})
     },
     async changeUserPhoto(photo: File) {
         const formData = new FormData()
         formData.append('photo', photo)
-        return await instanceWithToken.patch<{photo: string}>('users/me/', formData)
+        return await instanceWithToken.patch<{ photo: string }>('users/me/', formData)
     },
     async subscribe(username: string) {
         return await instanceWithToken.post<void>(`users/${username}/subscribers/`)
